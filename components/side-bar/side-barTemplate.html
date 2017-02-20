@@ -1,1 +1,47 @@
-hello hellppppp
+<div ng-cloak layout="row" layout-align="center stretch">
+	<md-content class="cs106q-side-bar" layout="column" layout-align="center center" >
+		<h2 flex lass="cs106q-side-bar-title">Register</h2>
+		<form name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
+			<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
+				<label>SUID</label>
+				<input ng-model="newBucket.suid">
+			</md-input-container>
+			<div layout-gt-sm="row">
+				<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+					<label>First name</label>
+					<input ng-model="newBucket.firstName">
+				</md-input-container>
+
+				<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+					<label>Last Name</label>
+					<input ng-model="newBucket.lastName">
+				</md-input-container>
+			</div>
+			<div layout-gt-sm="row">
+				<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+					<label>Class</label>
+					<md-select ng-model="newBucket.class">
+						<md-option ng-repeat="class in classes" value="{{class}}">
+							{{class}}
+						</md-option>
+					</md-select>
+				</md-input-container>
+
+				<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+					<label>Question Type</label>
+					<md-select ng-model="newBucket.type">
+						<md-option ng-repeat="type in types" value="{{type}}">
+							{{type}}
+						</md-option>
+					</md-select>
+				</md-input-container>
+			</div>
+
+			<md-input-container class="md-block">
+				<label>Problem Description</label>
+				<textarea ng-model="newBucket.description" rows="1" md-select-on-focus></textarea>
+			</md-input-container>
+			<md-button flex md-whiteframe="1" type="submit">Put me in</md-button>
+		</form>
+	</md-content>
+</div>
