@@ -1,6 +1,6 @@
 <div layout="column" layout-align="center strech">
 	<div flex layout="column" layout-align="center center"><h4 flex>Current Queue</h4></div>
-	<md-card ng-repeat="bucket in mainPageModel.buckets">
+	<md-card ng-repeat="bucket in main.buckets">
 
 		<md-card-header flex layout="row" layout-align="start center">
 
@@ -15,7 +15,7 @@
 			</div>
 
 			<md-card-actions flex layout="row" layout-align="end center">
-				<md-button>Action 1</md-button>
+				<md-button ng-click="mainPageModel.removeBucket(bucket)">Remove</md-button>
 				<md-button>Action 2</md-button>
 				<md-button>Action 3</md-button>
 			</md-card-actions>

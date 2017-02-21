@@ -48,7 +48,7 @@ clientList.registerClient = function(req, res) {
             }
         }
         clientList.list.splice(j,1);
-        console.log('closed client: clientList.length');
+        console.log('closed client' + clientList.length);
     });
 };
 

@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 var queueHandler = require('./server/queue.js');
 app.post('/putnew', queueHandler.putNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
+app.post('/deleteBucket', queueHandler.deleteBucket);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);

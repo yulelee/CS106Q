@@ -49,4 +49,18 @@ queueHandler.getCurrentList = function(req, res) {
 	});
 };
 
+queueHandler.deleteBucket = function(req, res) {
+	Bucket.find({'_id': req.body.bucketId}, function (err, bucket) {
+		if (err) {res.status(400).send('Error bucket not existing.');}
+		else {
+			console.log(bucket);
+			console.log(req.body.bucketId);
+			Bucket.find({'_id': req.body.bucketId}).remove(function() {
+				clientList.broadcastChange();
+				res.status(200).send('Deleted.');
+			});
+		}
+	});
+};
+
 module.exports = queueHandler;
