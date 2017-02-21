@@ -3,6 +3,7 @@
 var async = require('async');
 
 var Bucket = require('../schema/bucket.js');
+var clientList = require('./clientList.js');
 
 var queueHandler = {};
 
@@ -22,7 +23,10 @@ queueHandler.putNew = function(req, res) {
 	            });
 	            bucket.save(function(err, bucket) {
 	                if (err) {res.status(400).end('Error saving new bucket.');}
-	                else {res.status(200).end(JSON.stringify(bucket));}
+	                else {
+	                	clientList.broadcastChange();
+	                	res.status(200).end(JSON.stringify(bucket));
+	                }
 	            });
 	        }
 	    }

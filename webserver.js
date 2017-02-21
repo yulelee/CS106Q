@@ -12,10 +12,12 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 
 var queueHandler = require('./server/queue.js');
-
 app.post('/putnew', queueHandler.putNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
 
+var clientList = require('./server/clientList.js');
+app.get('/registerClient', clientList.registerClient);
+
 app.listen(3000, function () {
-	console.log('Example app listening on port 3000!')
+	console.log('Example app listening on port 3000!');
 });

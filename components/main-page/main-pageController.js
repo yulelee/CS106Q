@@ -3,13 +3,13 @@
 cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies',
     function($scope, $routeParams, $location, $resource, $rootScope, $cookies) {
 
-    	$scope.mainPageModel = {};
-
-    	var getCurrentList = function () {
+    	var getCurrentList = function (event, callback) {
+    		console.log(callback);
     	    var UserFavs = $resource("/getCurrentList", {}, {get: {method: "get", isArray: true}});
     	    UserFavs.get({}, function(buckets) {
-    	        $scope.mainPageModel.buckets = buckets;
+    	        $scope.main.buckets = buckets;
     	        console.log(buckets);
+    	        if (callback) callback();
     	    }, function(response) {
     	    	console.log(response);
     	    });
