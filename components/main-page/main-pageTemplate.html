@@ -1,1 +1,39 @@
-hello hellpuhuhuohus
+<div layout="column" layout-align="center strech">
+	<div flex layout="column" layout-align="center center"><h4 flex>Current Queue</h4></div>
+	<md-card ng-repeat="bucket in mainPageModel.buckets">
+
+		<md-card-header flex layout="row" layout-align="start center">
+
+			<div flex layout="row" layout-align="start center">
+				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+					<p5 flex>{{bucket.type}}</p5>
+				</div>
+
+				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+					<p5 flex>{{bucket.class}}</p5>
+				</div>
+			</div>
+
+			<md-card-actions flex layout="row" layout-align="end center">
+				<md-button>Action 1</md-button>
+				<md-button>Action 2</md-button>
+				<md-button>Action 3</md-button>
+			</md-card-actions>
+		</md-card-header>
+		
+		<md-card-content>
+			<div flex layout="row" layout-align="start strech">
+				<div flex layout="column" layout-align="start center"> 
+					<h6>Students</h6>
+					<div ng-repeat="name in bucket.students">
+						<h6>{{name}}</h6>
+					</div>
+				</div>
+				<div flex layout="column" layout-align="start center">
+					<h6>Description</h6>
+					<p>{{bucket.description}}</p>
+				</div>
+			</div>
+		</md-card-content>
+	</md-card>
+</div>

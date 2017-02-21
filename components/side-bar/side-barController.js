@@ -23,7 +23,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     	    var newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
     	    newBucketRegister.putnew({
     	    	suid: $scope.newBucket.suid, 
-    	    	studentName: $scope.newBucket.firstName + $scope.newBucket.lastName,
+    	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
     	    	description: $scope.newBucket.description,
     	    	class: $scope.newBucket.class,
     	    	type: $scope.newBucket.type
@@ -32,6 +32,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     	        $scope.form.studentRegister.$setPristine();
     	        $scope.form.studentRegister.$setUntouched();
     	        clearRegisterForm();
+                $rootScope.$broadcast("refreshCurrentList");
     	    }, function(response) {
     	        console.log(response);
     	    });

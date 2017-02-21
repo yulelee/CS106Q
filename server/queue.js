@@ -29,4 +29,20 @@ queueHandler.putNew = function(req, res) {
 	});
 };
 
+queueHandler.getCurrentList = function(req, res) {
+	Bucket.find().sort({'date_time': -1}).exec(function(err, buckets) {
+	    if (err) {res.status(400).send('Error retrieving buckets.');}
+	    else {
+	    	var list = JSON.parse(JSON.stringify(buckets));
+	    	async.each(list, function(bucket, finishOneBucket) {
+	    	    bucket.date_time = new Date(bucket.date_time).toLocaleString();
+	    	    finishOneBucket();
+	    	}, function(err) {
+	    	    if (err) {response.status(400).end('Error processing buckets, final');}
+	    	    else {res.end(JSON.stringify(list));}
+	    	});
+	    }
+	});
+};
+
 module.exports = queueHandler;

@@ -11,9 +11,10 @@ var app = express();
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 
-var queueHandler = require('./server/queue.js')
+var queueHandler = require('./server/queue.js');
 
 app.post('/putnew', queueHandler.putNew);
+app.get('/getCurrentList', queueHandler.getCurrentList);
 
 app.listen(3000, function () {
 	console.log('Example app listening on port 3000!')
