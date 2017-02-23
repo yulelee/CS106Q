@@ -7,11 +7,33 @@ var clientList = require('./clientList.js');
 
 var queueHandler = {};
 
-queueHandler.putNew = function(req, res) {
-	Bucket.findOne({studentSuids: req.body.suid}, "_id", function(err, userExisted) {
+queueHandler.insertNew = function(req, res) {
+	console.log(req.body);
+	Bucket.findOne({_id: req.body._id}, function(err, bucket) {
 	    if (err) {res.status(400).end('Error checking existing SUID.');}
 	    else {
-	        if (userExisted) {res.status(400).end('SUID already existed.');}
+	        if (!bucket) {res.status(400).end('SUID not existing.');}
+	        else {
+	        	console.log(bucket);
+	            bucket.students.push(req.body.studentName);
+	            bucket.studentSuids.push(req.body.suid);
+	            bucket.save(function(err, bucket) {
+	                if (err) {res.status(400).end('Error saving bucket.');}
+	                else {
+	                	clientList.broadcastChange();
+	                	res.status(200).end(JSON.stringify(bucket));
+	                }
+	            });
+	        }
+	    }
+	});
+};
+
+queueHandler.putNew = function(req, res) {
+	Bucket.findOne({studentSuids: req.body.suid}, "_id", function(err, bucketExisted) {
+	    if (err) {res.status(400).end('Error checking existing SUID.');}
+	    else {
+	        if (bucketExisted) {res.status(400).end('SUID already existed.');}
 	        else {
 	            var bucket = new Bucket({ 
 	            	type: req.body.type,

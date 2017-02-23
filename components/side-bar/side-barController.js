@@ -21,22 +21,40 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     	clearRegisterForm();
 
     	$scope.newBucket.doRegister = function() {
-    	    var newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
-    	    newBucketRegister.putnew({
-    	    	suid: $scope.newBucket.suid, 
-    	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
-    	    	description: $scope.newBucket.description,
-    	    	class: $scope.newBucket.class,
-    	    	type: $scope.newBucket.type
-    	    }, function(user) {
-    	        console.log(user);
-    	        $scope.form.studentRegister.$setPristine();
-    	        $scope.form.studentRegister.$setUntouched();
-    	        clearRegisterForm();
-                $rootScope.$broadcast("refreshCurrentList");
-    	    }, function(response) {
-    	        console.log(response);
-    	    });
+            if ($scope.newBucket.type === 'Conceptual' && $scope.newBucket.existingPick !== null) {
+                var newBucketRegister = $resource("/insertNew", {}, {insertNew: {method: "post", isArray: false}});
+                newBucketRegister.insertNew({
+                    suid: $scope.newBucket.suid, 
+                    studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
+                    _id: $scope.newBucket.existingPick._id
+                }, function(user) {
+                    console.log(user);
+                    $scope.form.studentRegister.$setPristine();
+                    $scope.form.studentRegister.$setUntouched();
+                    clearRegisterForm();
+                    $rootScope.$broadcast("refreshCurrentList");
+                }, function(response) {
+                    console.log(response);
+                });
+            }
+            else {
+                var newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
+                newBucketRegister.putnew({
+        	    	suid: $scope.newBucket.suid, 
+        	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
+        	    	description: $scope.newBucket.description,
+        	    	class: $scope.newBucket.class,
+        	    	type: $scope.newBucket.type
+        	    }, function(user) {
+        	        console.log(user);
+        	        $scope.form.studentRegister.$setPristine();
+        	        $scope.form.studentRegister.$setUntouched();
+        	        clearRegisterForm();
+                    $rootScope.$broadcast("refreshCurrentList");
+        	    }, function(response) {
+        	        console.log(response);
+        	    });
+            }
     	};
 
         $scope.filterConceptualBuckets = function(bucket) {
@@ -46,17 +64,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 else {return $scope.newBucket.class === bucket.class;}
             } else {return false;}
         };
-
-        $scope.searchTerm;
-
-        $scope.clearSearchTerm = function() {
-            $scope.searchTerm = '';
-        };
-        // The md-select directive eats keydown events for some quick select
-        // logic. Since we have a search input here, we don't need that logic.
-        $element.find('input').on('keydown', function(ev) {
-            ev.stopPropagation();
-        });
-
+        
     }
 ]);
