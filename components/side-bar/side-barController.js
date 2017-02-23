@@ -1,7 +1,7 @@
 'use strict';
 
-cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies',
-    function($scope, $routeParams, $location, $resource, $rootScope, $cookies) {
+cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$element',
+    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $element) {
     	$scope.form = {};
     	$scope.classes = ['CS106A', 'CS106B', 'CS106X'];
     	$scope.types = ['Debugging', 'Conceptual'];
@@ -13,8 +13,9 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     		$scope.newBucket.firstName = undefined;
     		$scope.newBucket.lastName = undefined;
     		$scope.newBucket.description = undefined;
-    		$scope.newBucket.class = undefined;
-    		$scope.newBucket.type = undefined;
+    		$scope.newBucket.class = 'CS106A';
+    		$scope.newBucket.type = 'Debugging';
+            $scope.newBucket.existingPick = null;
     	}
 
     	clearRegisterForm();
@@ -37,6 +38,25 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     	        console.log(response);
     	    });
     	};
+
+        $scope.filterConceptualBuckets = function(bucket) {
+            console.log(bucket);
+            if (bucket.type === 'Conceptual') {
+                if ($scope.newBucket.class === undefined) {return true;}
+                else {return $scope.newBucket.class === bucket.class;}
+            } else {return false;}
+        };
+
+        $scope.searchTerm;
+
+        $scope.clearSearchTerm = function() {
+            $scope.searchTerm = '';
+        };
+        // The md-select directive eats keydown events for some quick select
+        // logic. Since we have a search input here, we don't need that logic.
+        $element.find('input').on('keydown', function(ev) {
+            ev.stopPropagation();
+        });
 
     }
 ]);
