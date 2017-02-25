@@ -16,13 +16,13 @@ public class Crawler {
 
 		HashMap<String, String> cookies = new HashMap<String, String>();
 		
-		cookies.put("ASP.NET_SessionId", "A00F8B2E1B5C575BD7767E93");
-		cookies.put("__utma", "159861551.154412178.1442985584.1488012011.1488055726.4");
-		cookies.put("__utmb", "159861551.2.10.1488055726");
-		cookies.put("__utmc", "159861551");
-		cookies.put("__utmt", "1");
-		cookies.put("__utmz", "159861551.1488055726.4.4.utmcsr=weblogin.stanford.edu|utmccn=(referral)|utmcmd=referral|utmcct=/login/");
-		cookies.put("webauth_at", "WLHuhGm9eYrlAHT+xB+RAcFeAkKOj0WUNj6/uHf+uAinPhFJgekfgxDR5Rr2Xco+FU39Vwdhzxw0qTTlVQgM6PNlyPvuAeinPABrIGEamEsgvCDe");
+		cookies.put("ASP.NET_SessionId", "");
+		cookies.put("__utma", "");
+		cookies.put("__utmb", "");
+		cookies.put("__utmc", "");
+		cookies.put("__utmt", "");
+		cookies.put("__utmz", "");
+		cookies.put("webauth_at", "");
 		Connection.Response seedPage = Jsoup.connect(seedUrl)  
 		         .cookies(cookies)
 		         .userAgent(USER_AGENT) 
