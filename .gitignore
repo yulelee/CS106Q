@@ -37,3 +37,9 @@ package.json
 
 # Optional REPL history
 .node_repl_history
+
+# java stuff
+bin
+*.jar
+*.txt
+*.class
