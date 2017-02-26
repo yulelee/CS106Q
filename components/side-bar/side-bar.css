@@ -1,9 +1,10 @@
 .cs106q-side-bar {
-	width: 90%
+	width: 100%;
 }
 
 .cs106q-side-bar-title {
-
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
 
 .cs106q-side-bar-input-container {

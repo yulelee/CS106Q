@@ -71,8 +71,10 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             var slLogin = $resource("/slLogin", {}, {slLogin: {method: "post", isArray: false}});
             slLogin.slLogin({
                 suid: $scope.slLogin.suid
-            }, function(user) {
-                console.log(user);
+            }, function(sl) {
+                console.log(sl);
+                $scope.main.curSLsuid = sl.suid;
+                $scope.main.curSLname = sl.name;
                 // $scope.form.studentRegister.$setPristine();
                 // $scope.form.studentRegister.$setUntouched();
                 // clearRegisterForm();
@@ -87,6 +89,8 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             slLogout.slLogout({
             }, function(user) {
                 console.log(user);
+                $scope.main.curSLsuid = undefined;
+                $scope.main.curSLname = undefined;
                 // $scope.form.studentRegister.$setPristine();
                 // $scope.form.studentRegister.$setUntouched();
                 // clearRegisterForm();
