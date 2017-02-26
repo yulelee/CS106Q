@@ -1,4 +1,4 @@
-<md-content ng-cloak layout="row" layout-align="center stretch">
+<md-content ng-cloak layout="column" layout-align="center stretch">
 	<md-content class="cs106q-side-bar" layout="column" layout-align="center center" >
 		<h4 flex lass="cs106q-side-bar-title">Register</h4>
 		<form name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
@@ -55,6 +55,17 @@
 				<textarea ng-required="true" ng-model="newBucket.description" rows="1" md-select-on-focus></textarea>
 			</md-input-container>
 			<md-button flex md-whiteframe="1" type="submit">Put me in</md-button>
+		</form>
+	</md-content>
+
+	<md-content class="cs106q-side-bar" layout="column" layout-align="center center" >
+		<h4 flex lass="cs106q-side-bar-title">SL Login</h4>
+		<form name="form.slLogin" id="sl-login" angular-validator ng-submit="slLogin.login()">
+			<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
+				<label>SUID</label>
+				<input ng-model="slLogin.suid" ng-required="true">
+			</md-input-container>
+			<md-button flex md-whiteframe="1" type="submit">Login</md-button>
 		</form>
 	</md-content>
 </md-content>

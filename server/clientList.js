@@ -11,7 +11,6 @@ clientList.broadcastChange = function () {
 	    var d = new Date();
 	    res.write('id: ' + d.getMilliseconds() + '\n');
 	    res.write('data:' + 'refresh' +   '\n\n'); // Note the extra newline
-	    console.log('asked refresh');
 	    finishOneRes();
 	}, function(err) {
 	    if (err) {console.log('Error broadcasting change, final');}
@@ -20,11 +19,8 @@ clientList.broadcastChange = function () {
 
 clientList.registerClient = function(req, res) {
  
-    // set timeout as high as possible
-    req.socket.setTimeout(1000000000);
- 
-    // send headers for event-stream connection
-    // see spec for more information
+    req.socket.setTimeout(60 * 60 * 6 * 1000);
+
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
@@ -34,7 +30,6 @@ clientList.registerClient = function(req, res) {
  
     // push this res object to our global variable
     clientList.list.push(res);
-    console.log('added client');
  
     // When the request is closed, e.g. the browser window
     // is closed. We search through the open connections
@@ -48,7 +43,6 @@ clientList.registerClient = function(req, res) {
             }
         }
         clientList.list.splice(j,1);
-        console.log('closed client' + clientList.length);
     });
 };
 

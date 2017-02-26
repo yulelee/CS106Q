@@ -64,6 +64,23 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 else {return $scope.newBucket.class === bucket.class;}
             } else {return false;}
         };
+
+        $scope.slLogin = {};
+        $scope.slLogin.suid = undefined;
+        $scope.slLogin.login = function() {
+            var slLogin = $resource("/slLogin", {}, {slLogin: {method: "post", isArray: false}});
+            slLogin.slLogin({
+                suid: $scope.slLogin.suid
+            }, function(user) {
+                console.log(user);
+                // $scope.form.studentRegister.$setPristine();
+                // $scope.form.studentRegister.$setUntouched();
+                // clearRegisterForm();
+                // $rootScope.$broadcast("refreshCurrentList");
+            }, function(response) {
+                console.log(response);
+            });
+        }
         
     }
 ]);

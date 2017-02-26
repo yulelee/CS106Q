@@ -8,13 +8,11 @@ var clientList = require('./clientList.js');
 var queueHandler = {};
 
 queueHandler.insertNew = function(req, res) {
-	console.log(req.body);
 	Bucket.findOne({_id: req.body._id}, function(err, bucket) {
 	    if (err) {res.status(400).end('Error checking existing SUID.');}
 	    else {
 	        if (!bucket) {res.status(400).end('SUID not existing.');}
 	        else {
-	        	console.log(bucket);
 	            bucket.students.push(req.body.studentName);
 	            bucket.studentSuids.push(req.body.suid);
 	            bucket.save(function(err, bucket) {
@@ -56,7 +54,7 @@ queueHandler.putNew = function(req, res) {
 };
 
 queueHandler.getCurrentList = function(req, res) {
-	Bucket.find().sort({'date_time': -1}).exec(function(err, buckets) {
+	Bucket.find().sort({'date_time': 1}).exec(function(err, buckets) {
 	    if (err) {res.status(400).send('Error retrieving buckets.');}
 	    else {
 	    	var list = JSON.parse(JSON.stringify(buckets));
@@ -75,8 +73,6 @@ queueHandler.deleteBucket = function(req, res) {
 	Bucket.find({'_id': req.body.bucketId}, function (err, bucket) {
 		if (err) {res.status(400).send('Error bucket not existing.');}
 		else {
-			console.log(bucket);
-			console.log(req.body.bucketId);
 			Bucket.find({'_id': req.body.bucketId}).remove(function() {
 				clientList.broadcastChange();
 				res.status(200).send('Deleted.');

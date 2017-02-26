@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 
 var slSchema = new mongoose.Schema({
     suid: String,
-    name: String
+    name: String,
+    logged_in_sessionId: {type: String, default: undefined}
 });
 
 var SL = mongoose.model('SL', slSchema);

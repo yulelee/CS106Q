@@ -4,18 +4,27 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/CS106Q');
 
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 
 var app = express();
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
+app.use(session({
+    secret: 'secretKey',
+    resave: false,
+    saveUninitialized: false,
+}));
 
 var queueHandler = require('./server/queue.js');
 app.post('/putnew', queueHandler.putNew);
 app.post('/insertNew', queueHandler.insertNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
 app.post('/deleteBucket', queueHandler.deleteBucket);
+
+var slLoginHandler = require('./server/slLogin.js');
+app.post('/slLogin', slLoginHandler.slLogin);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);
