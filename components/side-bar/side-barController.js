@@ -80,7 +80,21 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             }, function(response) {
                 console.log(response);
             });
-        }
+        };
+
+        $scope.slLogin.logout = function() {
+            var slLogout = $resource("/slLogout", {}, {slLogout: {method: "post", isArray: false}});
+            slLogout.slLogout({
+            }, function(user) {
+                console.log(user);
+                // $scope.form.studentRegister.$setPristine();
+                // $scope.form.studentRegister.$setUntouched();
+                // clearRegisterForm();
+                // $rootScope.$broadcast("refreshCurrentList");
+            }, function(response) {
+                console.log(response);
+            });
+        };
         
     }
 ]);

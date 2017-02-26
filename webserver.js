@@ -25,6 +25,7 @@ app.post('/deleteBucket', queueHandler.deleteBucket);
 
 var slLoginHandler = require('./server/slLogin.js');
 app.post('/slLogin', slLoginHandler.slLogin);
+app.post('/slLogout', slLoginHandler.slLogout);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);
