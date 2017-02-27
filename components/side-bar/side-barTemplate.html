@@ -1,83 +1,97 @@
 <md-content ng-cloak flex layout="row" layout-align="center center">
 	<md-tabs flex md-dynamic-height md-border-bottom md-stretch-tabs="always">
-	    <md-tab layout="column" layout-align="center center" label="Students">
-	        <md-content flex class="cs106q-side-bar" layout="column" layout-align="center center" ng-if="main.curSLsuid === undefined">
-	        	<h4 flex class="cs106q-side-bar-title">Register</h4>
-	        	<form layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
-	        		<div layout-gt-sm="row">
-	        			<md-input-container class="md-block" flex-gt-sm>
-	        				<label>Class</label>
-	        				<md-select required ng-model="newBucket.class">
-	        					<md-option ng-repeat="class in classes" value="{{class}}">
-	        						{{class}}
-	        					</md-option>
-	        				</md-select>
-	        			</md-input-container>
+		<md-tab ng-disabled="main.curSLsuid !== undefined" layout="column" layout-align="center center" label="Students">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center center" ng-if="main.curSLsuid === undefined">
+				<h4 flex class="cs106q-side-bar-title">Register</h4>
+				<form layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
+					<div layout-gt-sm="row">
+						<md-input-container class="md-block" flex-gt-sm>
+							<label>Class</label>
+							<md-select required ng-model="newBucket.class">
+								<md-option ng-repeat="class in classes" value="{{class}}">
+									{{class}}
+								</md-option>
+							</md-select>
+						</md-input-container>
 
-	        			<md-input-container class="md-block" flex-gt-sm>
-	        				<label>Question Type</label>
-	        				<md-select required ng-model="newBucket.type">
-	        					<md-option ng-repeat="type in types" value="{{type}}">
-	        						{{type}}
-	        					</md-option>
-	        				</md-select>
-	        			</md-input-container>
-	        		</div>
+						<md-input-container class="md-block" flex-gt-sm>
+							<label>Question Type</label>
+							<md-select required ng-model="newBucket.type">
+								<md-option ng-repeat="type in types" value="{{type}}">
+									{{type}}
+								</md-option>
+							</md-select>
+						</md-input-container>
+					</div>
 
-	        		<md-input-container ng-required="true" flex-gt-xs class="md-block " layout="column" layout-align="center center" ng-if="newBucket.type === 'Conceptual'">
-	        			<label>Pick an existing problem</label>
-	        			<md-select ng-required="true" data-md-container-class="selectdemoSelectHeader md-content" ng-model="newBucket.existingPick" md-on-open="clearSearchTerm()" md-on-close="clearSearchTerm()">
-	        				<md-option ng-value="null" layout="center">
-	        					New Topic
-	        				</md-option>
-	        				<md-option ng-value="bucket" layout="center" ng-repeat="bucket in main.buckets | filter : filterConceptualBuckets | filter : searchTerm">
-	        					{{bucket.description}}
-	        				</md-option>
-	        			</md-select>
-	        		</md-input-container>
+					<md-input-container ng-required="true" flex-gt-xs class="md-block " layout="column" layout-align="center center" ng-if="newBucket.type === 'Conceptual'">
+						<label>Pick an existing problem</label>
+						<md-select ng-required="true" data-md-container-class="selectdemoSelectHeader md-content" ng-model="newBucket.existingPick" md-on-open="clearSearchTerm()" md-on-close="clearSearchTerm()">
+							<md-option ng-value="null" layout="center">
+								New Topic
+							</md-option>
+							<md-option ng-value="bucket" layout="center" ng-repeat="bucket in main.buckets | filter : filterConceptualBuckets | filter : searchTerm">
+								{{bucket.description}}
+							</md-option>
+						</md-select>
+					</md-input-container>
 
-	        		<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
-	        			<label>SUID</label>
-	        			<input ng-model="newBucket.suid" ng-required="true">
-	        		</md-input-container>
-	        		<div layout-gt-sm="row">
-	        			<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
-	        				<label>First name</label>
-	        				<input ng-model="newBucket.firstName" ng-required="true">
-	        			</md-input-container>
+					<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
+						<label>SUID</label>
+						<input ng-model="newBucket.suid" ng-required="true">
+					</md-input-container>
+					<div layout-gt-sm="row">
+						<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+							<label>First name</label>
+							<input ng-model="newBucket.firstName" ng-required="true">
+						</md-input-container>
 
-	        			<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
-	        				<label>Last Name</label>
-	        				<input ng-model="newBucket.lastName" ng-required="true">
-	        			</md-input-container>
-	        		</div>
-	        		<md-input-container class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'" ng-required="true">
-	        			<label>Problem Description</label>
-	        			<textarea ng-required="true" ng-model="newBucket.description" rows="1" md-select-on-focus></textarea>
-	        		</md-input-container>
-	        		<md-button flex="grow" type="submit" class="md-whiteframe-z1">Put me into the queue</md-button>
-	        	</form>
-	        </md-content>
-	    </md-tab>
-	    <md-tab label="Section Leaders">
-		    <md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid === undefined">
-		    	<div flex layout="column" layout-align="center center">
-		    		<h4 flex class="cs106q-side-bar-title">SL Login</h4>
-		    	</div>
-		    	<form layout="column" layout-align="center stretch" name="form.slLogin" id="sl-login" angular-validator ng-submit="slLogin.login()">
-		    		<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
-		    			<label>SUID</label>
-		    			<input ng-model="slLogin.suid" ng-required="true">
-		    		</md-input-container>
-		    		<md-button flex md-whiteframe="1" type="submit">Login</md-button>
-		    	</form>
-		    </md-content>
-		    <md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid !== undefined">
-		    	<div flex layout="column" layout-align="center center">
-		    		<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSLname}}</h4>
-		    	</div>
-		    	<md-button flex ng-click="slLogin.logout()" class="md-whiteframe-z1">Logout</md-button>
-		    </md-content>
-	    </md-tab>
+						<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-sm>
+							<label>Last Name</label>
+							<input ng-model="newBucket.lastName" ng-required="true">
+						</md-input-container>
+					</div>
+					<md-input-container class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'" ng-required="true">
+						<label>Problem Description</label>
+						<textarea ng-required="true" ng-model="newBucket.description" rows="1" md-select-on-focus></textarea>
+					</md-input-container>
+					<md-button flex="grow" type="submit" class="md-whiteframe-z1">Put me into the queue</md-button>
+				</form>
+			</md-content>
+		</md-tab>
+		<md-tab label="Section Leaders">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid === undefined">
+				<div flex layout="column" layout-align="center center">
+					<h4 flex class="cs106q-side-bar-title">SL Login</h4>
+				</div>
+				<form layout="column" layout-align="center stretch" name="form.slLogin" id="sl-login" angular-validator ng-submit="slLogin.login()">
+					<md-input-container class="md-block cs106q-side-bar-input-container" flex-gt-xs>
+						<label>SUID</label>
+						<input ng-model="slLogin.suid" ng-required="true">
+					</md-input-container>
+					<md-button flex md-whiteframe="1" type="submit">Login</md-button>
+				</form>
+			</md-content>
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid !== undefined">
+				<div flex layout="column" layout-align="center center">
+					<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSLname}}</h4>
+				</div>
+				<md-button flex ng-click="slLogin.logout()" class="md-whiteframe-z1">Logout</md-button>
+			</md-content>
+
+			<md-content ng-if="main.curSLsuid !== undefined">
+				<md-list flex>
+					<md-subheader class="md-no-sticky">Current On Duty:</md-subheader>
+					<md-list-item class="md-3-line" ng-repeat="sl in slData.curSLs" ng-click="null">
+						<div class="md-list-item-text" layout="column">
+							<h3>{{sl.name}}</h3>
+							<!-- <h4>{{ item.what }}</h4>
+							<p>{{ item.notes }}</p> -->
+						</div>
+					</md-list-item>
+					<md-divider ></md-divider>
+				</md-list>
+			</md-content>
+		</md-tab>
 	</md-tabs>
 </md-content>

@@ -16,7 +16,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     		$scope.newBucket.class = 'CS106A';
     		$scope.newBucket.type = 'Debugging';
             $scope.newBucket.existingPick = null;
-    	}
+    	};
 
     	clearRegisterForm();
 
@@ -81,6 +81,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 expDate.setMonth(expDate.getDay() + 2);
                 $cookies.put("logged_sl__id", sl._id, {expires: expDate});
                 $cookies.put("logged_sl_name", sl.name, {expires: expDate});
+                getCurSLlist();
             }, function(response) {
                 console.log(response);
             });
@@ -93,14 +94,35 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 console.log(user);
                 $scope.main.curSLsuid = undefined;
                 $scope.main.curSLname = undefined;
-                // $scope.form.studentRegister.$setPristine();
-                // $scope.form.studentRegister.$setUntouched();
-                // clearRegisterForm();
-                // $rootScope.$broadcast("refreshCurrentList");
-            }, function(response) {
-                console.log(response);
+                $cookies.remove("logged_sl__id");
+                $cookies.remove("logged_sl_name");
+                $scope.slData.curSLs = undefined;
+            }, function(res) {
+                $scope.main.curSLsuid = undefined;
+                $scope.main.curSLname = undefined;
+                $cookies.remove("logged_sl__id");
+                $cookies.remove("logged_sl_name");
+                console.log(res);
             });
         };
+
+        $scope.slData = {};
+        $scope.slData.curSLs = undefined;
+        var getCurSLlist = function() {
+            var GetCurSLlist = $resource("/getCurSLlist", {}, {get: {method: "get", isArray: true}});
+            GetCurSLlist.get({
+            }, function(list) {
+                $scope.slData.curSLs = list;
+            }, function(res) {
+                $scope.main.curSLsuid = undefined;
+                $scope.main.curSLname = undefined;
+                $cookies.remove("logged_sl__id");
+                $cookies.remove("logged_sl_name");
+                console.log(res);
+            });
+        };
+
+        if ($scope.main.curSLsuid !== undefined) { getCurSLlist(); }
         
     }
 ]);
