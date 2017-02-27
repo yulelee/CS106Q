@@ -30,5 +30,17 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             });
         };
 
+        $scope.mainPageModel.pickBucket = function(bucket_id) {
+            var PickBucket = $resource("/pickBucket", {}, {post: {method: "post", isArray: false}});
+            console.log(bucket_id);
+            PickBucket.post({
+                bucket_id: bucket_id
+            }, function(sl) {
+                console.log(sl);
+            }, function(err) {
+                console.log(err);
+            });
+        }
+
     }
 ]);

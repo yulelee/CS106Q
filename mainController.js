@@ -17,6 +17,7 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 		var serverPushBackCallback = function () {
 			$scope.$apply(function () {
 				$rootScope.$broadcast("refreshCurrentList");
+				$rootScope.$broadcast("refreshSLlist");
 			});
 		};
 

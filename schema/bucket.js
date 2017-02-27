@@ -18,7 +18,7 @@ var bucketSchema = new mongoose.Schema({
     },
     students: [String],
     studentSuids: [String],
-    helperSL: String
+    helperSL: {type: mongoose.Schema.Types.ObjectId, default:  undefined}
 });
 
 var Bucket = mongoose.model('Bucket', bucketSchema);

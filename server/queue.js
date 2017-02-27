@@ -54,10 +54,8 @@ queueHandler.putNew = function(req, res) {
 };
 
 queueHandler.getCurrentList = function(req, res) {
-
-	console.log(req.session);
-
 	Bucket.find().sort({'date_time': 1}).exec(function(err, buckets) {
+		console.log(buckets);
 	    if (err) {res.status(400).send('Error retrieving buckets.');}
 	    else {
 	    	var list = JSON.parse(JSON.stringify(buckets));

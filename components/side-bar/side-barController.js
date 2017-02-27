@@ -106,6 +106,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             });
         };
 
+        // update the sl list on the side
         $scope.slData = {};
         $scope.slData.curSLs = undefined;
         var getCurSLlist = function() {
@@ -123,6 +124,8 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         };
 
         if ($scope.main.curSLsuid !== undefined) { getCurSLlist(); }
+
+        $scope.$on("refreshSLlist", getCurSLlist);
         
     }
 ]);

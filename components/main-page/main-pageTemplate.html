@@ -16,7 +16,8 @@
 
 			<md-card-actions flex layout="row" layout-align="end center">
 				<md-button ng-click="mainPageModel.removeBucket(bucket)">Remove</md-button>
-				<md-button>Action 2</md-button>
+				<md-button ng-click="mainPageModel.pickBucket(bucket._id)" ng-if="bucket.helperSL === undefined">Pick</md-button>
+				<md-button ng-click="mainPageModel.putBackBucket(bucket._id)" ng-if="bucket.helperSL !== undefined">Put Back</md-button>
 				<md-button>Action 3</md-button>
 			</md-card-actions>
 		</md-card-header>
