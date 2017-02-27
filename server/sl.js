@@ -26,9 +26,16 @@ slHandler.getCurSLlist = function(req, res) {
                 else { finishOneSL(); }
             }, function(err) {
                 if (err) {res.status(400).send('Error retrieving bucket!');}
-                else { console.log(curSLs); res.status(200).send(JSON.stringify(curSLs)); }
+                else { res.status(200).send(JSON.stringify(curSLs)); }
             });
         }
+    });
+};
+
+slHandler.getSL = function(req, res) {
+    SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
+        if (err) { res.status(400).send('Error searching for SL.'); }
+        else { res.status(200).send(JSON.stringify(sl)); }
     });
 };
 

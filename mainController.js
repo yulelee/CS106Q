@@ -26,13 +26,16 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 
 
 		// whether this is a section leader
-		// $scope.main.curSLsuid = undefined;
-		// $scope.main.curSLname = undefined;
 		$scope.main.curSL = undefined;
 
 		if ($cookies.get('logged_sl__id')) {
-			$scope.main.curSLsuid = $cookies.get('logged_sl__id');
-			$scope.main.curSLname = $cookies.get('logged_sl_name');
+			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
+			GetSL.get({}, function(sl) {
+			    $scope.main.curSL = sl;
+			    $rootScope.$broadcast("refreshSLlist");
+			}, function(err) {
+			    console.log(err);
+			});
 		}
 	}
 ]);

@@ -33,6 +33,7 @@ app.post('/slLogin', slLoginHandler.slLogin);
 app.post('/slLogout', slLoginHandler.slLoginCheck, slLoginHandler.slLogout);
 
 app.get('/getCurSLlist', slLoginHandler.slLoginCheck, slHandler.getCurSLlist);
+app.get('/getSL', slLoginHandler.slLoginCheck, slHandler.getSL);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);
