@@ -56,5 +56,17 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             });
         };
 
+        $scope.mainPageModel.solveBucket = function(bucket_id) {
+            var SolveBucket = $resource("/solveBucket", {}, {post: {method: "post", isArray: false}});
+            SolveBucket.post({
+                bucket_id: bucket_id
+            }, function(sl) {
+                console.log(sl);
+                $scope.main.curSL = sl;
+            }, function(err) {
+                console.log(err);
+            });
+        };
+
     }
 ]);

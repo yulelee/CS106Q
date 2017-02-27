@@ -28,6 +28,7 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 		// whether this is a section leader
 		$scope.main.curSL = undefined;
 
+		// if there is a sl in cookie, this means that there is a sl logged-in, therefore automatically log in.
 		if ($cookies.get('logged_sl__id')) {
 			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
 			GetSL.get({}, function(sl) {

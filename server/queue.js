@@ -103,6 +103,30 @@ queueHandler.deleteBucket = function(req, res) {
 	});
 };
 
+queueHandler.solveBucket = function(req, res) {
+	Bucket.find({_id: req.body.bucket_id}, function (err, bucket) {
+		if (err) {res.status(400).send('Error bucket not existing.');}
+		else {
+			Bucket.find({_id: req.body.bucket_id}).remove(function() {
+				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
+					if (err) { res.status(400).send('Error retrieving the sl.'); }
+					else {
+						if (sl) { sl.currently_helping = undefined; }
+						else { res.status(400).send('You are not helping.'); }
+						sl.save(function(err, savedSL) {
+							if (err) { res.status(400).send('Error saving the sl.'); }
+							else {
+								res.status(200).send(JSON.stringify(savedSL));
+								clientList.broadcastChange();
+							}
+						})
+					}
+				});
+			});
+		}
+	});
+};
+
 queueHandler.putBackBucket = function(req, res) {
 	Bucket.findOne({_id: req.body.bucket_id}, function(err, bucket) {
 		if (err) {res.status(400).send('Error bucket not existing.');}
