@@ -23,5 +23,14 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 		var serverPushBack = new EventSource('/registerClient');
 		serverPushBack.addEventListener('message', serverPushBackCallback, false);
 
+
+		// whether this is a section leader
+		$scope.main.curSLsuid = undefined;
+		$scope.main.curSLname = undefined;
+
+		if ($cookies.get('logged_sl__id')) {
+			$scope.main.curSLsuid = $cookies.get('logged_sl__id');
+			$scope.main.curSLname = $cookies.get('logged_sl_name');
+		}
 	}
 ]);

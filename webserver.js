@@ -17,15 +17,16 @@ app.use(session({
     saveUninitialized: false,
 }));
 
+var slLoginHandler = require('./server/slLogin.js');
+
 var queueHandler = require('./server/queue.js');
 app.post('/putnew', queueHandler.putNew);
 app.post('/insertNew', queueHandler.insertNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
-app.post('/deleteBucket', queueHandler.deleteBucket);
+app.post('/deleteBucket', slLoginHandler.slLoginCheck, queueHandler.deleteBucket);
 
-var slLoginHandler = require('./server/slLogin.js');
 app.post('/slLogin', slLoginHandler.slLogin);
-app.post('/slLogout', slLoginHandler.slLogout);
+app.post('/slLogout', slLoginHandler.slLoginCheck, slLoginHandler.slLogout);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);

@@ -75,10 +75,12 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 console.log(sl);
                 $scope.main.curSLsuid = sl.suid;
                 $scope.main.curSLname = sl.name;
-                // $scope.form.studentRegister.$setPristine();
-                // $scope.form.studentRegister.$setUntouched();
-                // clearRegisterForm();
-                // $rootScope.$broadcast("refreshCurrentList");
+                
+                // store the login information in cookie
+                var expDate = new Date();
+                expDate.setMonth(expDate.getDay() + 2);
+                $cookies.put("logged_sl__id", sl._id, {expires: expDate});
+                $cookies.put("logged_sl_name", sl.name, {expires: expDate});
             }, function(response) {
                 console.log(response);
             });

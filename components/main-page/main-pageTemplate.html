@@ -2,7 +2,7 @@
 	<div flex layout="column" layout-align="center center"><h4 flex>Current Queue</h4></div>
 	<md-card ng-repeat="bucket in main.buckets">
 
-		<md-card-header flex layout="row" layout-align="start center">
+		<md-card-header flex layout="row" layout-sm="column" layout-align="start center">
 
 			<div flex layout="row" layout-align="start center">
 				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
@@ -22,7 +22,7 @@
 		</md-card-header>
 		
 		<md-card-content>
-			<div flex layout="row" layout-align="start strech">
+			<div flex layout="row" layout-sm="column" layout-align="start strech">
 				<div flex layout="column" layout-align="start center"> 
 					<h6>Students</h6>
 					<div ng-repeat="name in bucket.students">

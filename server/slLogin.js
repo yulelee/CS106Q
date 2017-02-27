@@ -7,6 +7,16 @@ var clientList = require('./clientList.js');
 
 var slLoginHandler = {};
 
+slLoginHandler.slLoginCheck = function(req, res, next) {
+    SL.findOne({suid: req.session.slSuid, _id: req.session.sl_id}, function(err, userInSess) {
+        if (err) {res.status(400).send('Error.');}
+        else {
+            if (userInSess && userInSess.logged_in_sessionId && userInSess.logged_in_sessionId === req.session.id) {next();}
+            else {res.status(401).send('Unauthorized.');}
+        }
+    });
+};
+
 slLoginHandler.slLogin = function(req, res) {
 	if (req.body.suid) {
 	    SL.findOne({suid: req.body.suid}, function(err, sl) {
@@ -62,7 +72,7 @@ slLoginHandler.slLogout = function(req, res) {
                 sl.save(function() {
                     req.session.destroy(function() {
                         res.status(200).send('logged out successfully.'); 
-                    });                   
+                    });
                 });
             }
             else {

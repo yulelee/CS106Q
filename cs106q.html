@@ -31,13 +31,13 @@
 
     <body layout="column">
 
-        <md-toolbar layout="row" layout-align="center center">
-            <h1 flex="none">LaIR</h1>
-        </md-toolbar>
+        <!-- <md-toolbar layout="row" layout-align="center center">
+            <h1 flex="none">Q</h1>
+        </md-toolbar> -->
 
         <div flex layout="row">
 
-            <md-sidenav md-is-locked-open="true" class="md-whiteframe-z2">
+            <md-sidenav layout="column" md-is-locked-open="true" class="md-whiteframe-z1">
                 <div ng-include="'components/side-bar/side-barTemplate.html'" ng-controller="SideBarController"></div>
             </md-sidenav>
 
