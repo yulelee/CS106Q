@@ -56,13 +56,21 @@ queueHandler.putNew = function(req, res) {
 
 queueHandler.getCurrentList = function(req, res) {
 	Bucket.find().sort({'date_time': 1}).exec(function(err, buckets) {
-		console.log(buckets);
 	    if (err) {res.status(400).send('Error retrieving buckets.');}
 	    else {
 	    	var list = JSON.parse(JSON.stringify(buckets));
 	    	async.each(list, function(bucket, finishOneBucket) {
 	    	    bucket.date_time = new Date(bucket.date_time).toLocaleString();
-	    	    finishOneBucket();
+	    	    if (bucket.helperSL) {
+	    	    	SL.findOne({_id: bucket.helperSL}, "", function(err, sl) { // if there is a helper, replace the _id with the actual object
+	    	    		if (err) { res.status(400).send('Error retrieving sl.'); }
+	    	    		else {
+	    	    			bucket.helperSL = JSON.parse(JSON.stringify(sl));
+	    	    			finishOneBucket();
+	    	    		}
+	    	    	});
+	    	    }
+	    	    else { finishOneBucket(); }
 	    	}, function(err) {
 	    	    if (err) {response.status(400).end('Error processing buckets, final');}
 	    	    else {res.end(JSON.stringify(list));}

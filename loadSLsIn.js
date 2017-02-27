@@ -22,10 +22,7 @@ SL.remove({}, function() {
             name: name
         }, function (err) {
             if (err) { console.error('Error creating SL', err); } 
-            else { 
-                console.log('Added: ' + suid + '\t' + name);
-                finishOneLine(); 
-            }
+            else { finishOneLine(); }
         });
     }, function() {
         Bucket.remove({}, function() {
