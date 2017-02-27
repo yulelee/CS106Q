@@ -7,6 +7,8 @@ var async = require('async');
 mongoose.connect('mongodb://localhost/CS106Q');
 
 var SL = require('./schema/sl.js');
+var Bucket = require('./schema/bucket.js');
+
 var fs = require('fs');
 
 SL.remove({}, function() {
@@ -26,6 +28,8 @@ SL.remove({}, function() {
             }
         });
     }, function() {
-        mongoose.disconnect();
+        Bucket.remove({}, function() {
+            mongoose.disconnect();
+        });
     });
 });

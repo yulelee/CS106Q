@@ -1,7 +1,7 @@
 <md-content ng-cloak flex layout="row" layout-align="center center">
 	<md-tabs flex md-dynamic-height md-border-bottom md-stretch-tabs="always">
-		<md-tab ng-disabled="main.curSLsuid !== undefined" layout="column" layout-align="center center" label="Students">
-			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center center" ng-if="main.curSLsuid === undefined">
+		<md-tab ng-disabled="main.curSL !== undefined" layout="column" layout-align="center center" label="Students">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center center" ng-if="main.curSL === undefined">
 				<h4 flex class="cs106q-side-bar-title">Register</h4>
 				<form layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
 					<div layout-gt-sm="row">
@@ -60,7 +60,7 @@
 			</md-content>
 		</md-tab>
 		<md-tab label="Section Leaders">
-			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid === undefined">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL === undefined">
 				<div flex layout="column" layout-align="center center">
 					<h4 flex class="cs106q-side-bar-title">SL Login</h4>
 				</div>
@@ -72,14 +72,14 @@
 					<md-button flex md-whiteframe="1" type="submit">Login</md-button>
 				</form>
 			</md-content>
-			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSLsuid !== undefined">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL !== undefined">
 				<div flex layout="column" layout-align="center center">
-					<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSLname}}</h4>
+					<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSL.name}}</h4>
 				</div>
 				<md-button flex ng-click="slLogin.logout()" class="md-whiteframe-z1">Logout</md-button>
 			</md-content>
 
-			<md-content ng-if="main.curSLsuid !== undefined">
+			<md-content ng-if="main.curSL !== undefined">
 				<md-list flex>
 					<md-subheader class="md-no-sticky">Current On Duty:</md-subheader>
 					<md-list-item class="md-3-line" ng-repeat="sl in slData.curSLs" ng-click="null">

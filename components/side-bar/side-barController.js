@@ -73,8 +73,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 suid: $scope.slLogin.suid
             }, function(sl) {
                 console.log(sl);
-                $scope.main.curSLsuid = sl.suid;
-                $scope.main.curSLname = sl.name;
+                $scope.main.curSL = sl;
                 
                 // store the login information in cookie
                 var expDate = new Date();
@@ -92,14 +91,12 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             slLogout.slLogout({
             }, function(user) {
                 console.log(user);
-                $scope.main.curSLsuid = undefined;
-                $scope.main.curSLname = undefined;
+                $scope.main.curSL = undefined;
                 $cookies.remove("logged_sl__id");
                 $cookies.remove("logged_sl_name");
                 $scope.slData.curSLs = undefined;
             }, function(res) {
-                $scope.main.curSLsuid = undefined;
-                $scope.main.curSLname = undefined;
+                $scope.main.curSL = undefined;
                 $cookies.remove("logged_sl__id");
                 $cookies.remove("logged_sl_name");
                 console.log(res);

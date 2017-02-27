@@ -26,8 +26,9 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 
 
 		// whether this is a section leader
-		$scope.main.curSLsuid = undefined;
-		$scope.main.curSLname = undefined;
+		// $scope.main.curSLsuid = undefined;
+		// $scope.main.curSLname = undefined;
+		$scope.main.curSL = undefined;
 
 		if ($cookies.get('logged_sl__id')) {
 			$scope.main.curSLsuid = $cookies.get('logged_sl__id');

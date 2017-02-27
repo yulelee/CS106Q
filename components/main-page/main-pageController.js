@@ -37,10 +37,24 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
                 bucket_id: bucket_id
             }, function(sl) {
                 console.log(sl);
+                $scope.main.curSL = sl;
             }, function(err) {
                 console.log(err);
             });
-        }
+        };
+
+        $scope.mainPageModel.putBackBucket = function(bucket_id) {
+            var PutBackBucket = $resource("/putBackBucket", {}, {post: {method: "post", isArray: false}});
+            console.log(bucket_id);
+            PutBackBucket.post({
+                bucket_id: bucket_id
+            }, function(sl) {
+                console.log(sl);
+                $scope.main.curSL = sl;
+            }, function(err) {
+                console.log(err);
+            });
+        };
 
     }
 ]);
