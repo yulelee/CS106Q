@@ -104,10 +104,11 @@ queueHandler.deleteBucket = function(req, res) {
 };
 
 queueHandler.solveBucket = function(req, res) {
-	Bucket.find({_id: req.body.bucket_id}, function (err, bucket) {
+	Bucket.findOne({_id: req.body.bucket_id}, "", function (err, bucket) {
 		if (err) {res.status(400).send('Error bucket not existing.');}
 		else {
-			Bucket.find({_id: req.body.bucket_id}).remove(function() {
+			bucket.solved = true;
+			bucket.save(function(err, savedBucket) {
 				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
 					if (err) { res.status(400).send('Error retrieving the sl.'); }
 					else {
@@ -119,7 +120,7 @@ queueHandler.solveBucket = function(req, res) {
 								res.status(200).send(JSON.stringify(savedSL));
 								clientList.broadcastChange();
 							}
-						})
+						});
 					}
 				});
 			});
@@ -159,20 +160,15 @@ queueHandler.putBackBucket = function(req, res) {
 };
 
 queueHandler.pickBucket = function(req, res) {
-    console.log(req.body.bucket_id);
     SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
         if (err) { res.status(400).send('Cannot retrieve SL.'); }
         else { 
-            console.log(sl);
-            console.log(sl.currently_helping);
             if (sl.currently_helping !== undefined) { res.status(400).send('Please finish the current one first!'); }
             else {
-                console.log(sl.currently_helping);
                 Bucket.findOne({_id: req.body.bucket_id}, function(err, bucket) {
-                    console.log(bucket);
                     if (err) { res.status(400).send('Error retrieving bucket!'); }
                     else {
-                        if (bucket.helperSL !== undefined) { res.status(400).send('Somebody already helping!'); }
+                        if (bucket.helperSL !== undefined || bucket.solved) { res.status(400).send('Somebody already helping or helped!'); }
                         else {
                         	bucket.helperSL = sl._id;
                         	bucket.save(function(err) {

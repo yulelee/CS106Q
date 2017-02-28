@@ -18,6 +18,7 @@ var bucketSchema = new mongoose.Schema({
     },
     students: [String],
     studentSuids: [String],
+    solved: {type: Boolean, default:  false},
     helperSL: {type: mongoose.Schema.Types.ObjectId, default:  undefined}
 });
 
