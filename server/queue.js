@@ -190,7 +190,7 @@ queueHandler.pickBucket = function(req, res) {
         else { 
             if (sl.currently_helping !== undefined) { res.status(400).send('Please finish the current one first!'); }
             else {
-                Bucket.findOne({_id: req.body.bucket_id}, function(err, bucket) {
+                Bucket.findOne({_id: req.body.bucket_id}, "", function(err, bucket) {
                     if (err) { res.status(400).send('Error retrieving bucket!'); }
                     else {
                         if (bucket.helperSL !== undefined || bucket.solved) { res.status(400).send('Somebody already helping or helped!'); }
@@ -203,6 +203,9 @@ queueHandler.pickBucket = function(req, res) {
                         	    	sl.save(function(err, savedSL) {
                         	    	    if (err) { res.status(400).send('Error saving SL!'); }
                         	    	    else {
+                        	    	    	// the returned sl contains the whole bucket object
+                        	    	    	savedSL = JSON.parse(JSON.stringify(savedSL));
+                        	    	    	savedSL.currently_helping = JSON.parse(JSON.stringify(bucket));
                         	    	    	res.status(200).send(JSON.stringify(savedSL)); 
                         	    	    	clientList.broadcastChange();
                         	    	    }

@@ -35,7 +35,20 @@ slHandler.getCurSLlist = function(req, res) {
 slHandler.getSL = function(req, res) {
     SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
         if (err) { res.status(400).send('Error searching for SL.'); }
-        else { res.status(200).send(JSON.stringify(sl)); }
+        else { 
+            if (sl.currently_helping) {
+                Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
+                    if (err) { res.status(400).send('Error retrieving bucket!'); }
+                    else {
+                        // the returned sl contains the whole bucket object
+                        sl = JSON.parse(JSON.stringify(sl));
+                        sl.currently_helping = JSON.parse(JSON.stringify(bucket));
+                        res.status(200).send(JSON.stringify(sl));
+                    }
+                });
+            }
+            else res.status(200).send(JSON.stringify(sl)); 
+        }
     });
 };
 
