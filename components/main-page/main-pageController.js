@@ -6,7 +6,7 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
         $scope.mainPageModel = {};
 
     	var getCurrentList = function (event, callback) {
-    	    var GetCurrentList = $resource("/getCurrentList", {}, {get: {method: "get", isArray: true}});
+    	    var GetCurrentList = $resource("/getCurrentList", {}, {get: {method: "get", isArray: false}});
     	    GetCurrentList.get({}, function(buckets) {
     	        $scope.main.buckets = buckets;
     	        console.log(buckets);

@@ -7,14 +7,15 @@
 	margin-bottom: 15px;
 }
 
-.cs106q-side-bar-input-container {
-	margin: 0px;
+/*.cs106q-side-bar-input-container {
+	margin: 10px;
+	padding: 5px;
 }
-
-.cs106q-bucket-picker-container {
+*/
+/*.cs106q-bucket-picker-container {
 	height: 50%;
 	width: 20%;
-}
+}*/
 
 .option {
 	width: 20%;
