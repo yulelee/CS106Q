@@ -56,6 +56,9 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             });
         };
 
+        // export this function to main
+        $scope.main.putBackBucket = $scope.mainPageModel.putBackBucket;
+
         $scope.mainPageModel.solveBucket = function(bucket_id) {
             var SolveBucket = $resource("/solveBucket", {}, {post: {method: "post", isArray: false}});
             SolveBucket.post({
@@ -67,6 +70,9 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
                 console.log(err);
             });
         };
+
+        // export this function to main
+        $scope.main.solveBucket = $scope.mainPageModel.solveBucket;
 
     }
 ]);

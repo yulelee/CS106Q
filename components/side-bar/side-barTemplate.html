@@ -1,7 +1,4 @@
 <md-content ng-cloak flex layout="column" layout-align="center stretch">
-
-	<div flex layout="column" layout-align="center center"><h4 flex>Please Sign-Up</h4></div>
-
 	<md-tabs flex md-dynamic-height md-border-bottom md-stretch-tabs="always">
 		<md-tab ng-disabled="main.curSL !== undefined" layout="column" layout-align="center center" label="Students">
 			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center center" ng-if="main.curSL === undefined">
@@ -63,6 +60,12 @@
 			</md-content>
 		</md-tab>
 		<md-tab label="Section Leaders">
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL !== undefined">
+				<div flex layout="column" layout-align="center center">
+					<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSL.name}}</h4>
+				</div>
+			</md-content>
+
 			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL === undefined">
 				<div flex layout="column" layout-align="center center">
 					<h4 flex class="cs106q-side-bar-title">SL Login</h4>
@@ -75,11 +78,22 @@
 					<md-button flex md-whiteframe="1" type="submit">Login</md-button>
 				</form>
 			</md-content>
-			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL !== undefined">
-				<div flex layout="column" layout-align="center center">
-					<h4 flex class="cs106q-side-bar-title">Hello, {{main.curSL.name}}</h4>
-				</div>
-				<md-button flex ng-click="slLogin.logout()" class="md-whiteframe-z1">Logout</md-button>
+
+			<md-content ng-if="main.curSL !== undefined && main.curSL.currently_helping !== undefined">
+				<md-subheader class="md-no-sticky">You are helping:</md-subheader>
+
+				<md-card>
+					<md-card-title>
+						<md-card-title-text>
+							<span class="md-headline">{{main.curSL.currently_helping.students[0]}}</span>
+							<span class="md-subhead">{{main.curSL.currently_helping.class}}, {{main.curSL.currently_helping.type}}</span>
+						</md-card-title-text>
+					</md-card-title>
+					<md-card-actions layout="row" layout-align="end center">
+						<md-button ng-click="main.putBackBucket(main.curSL.currently_helping._id)">Put Back</md-button>
+						<md-button ng-click="main.solveBucket(main.curSL.currently_helping._id)">Solved</md-button>
+					</md-card-actions>
+				</md-card>
 			</md-content>
 
 			<md-content ng-if="main.curSL !== undefined">
@@ -95,6 +109,10 @@
 					</md-list-item>
 					<md-divider ></md-divider>
 				</md-list>
+			</md-content>
+
+			<md-content flex class="cs106q-side-bar" layout="column" layout-align="center stretch" ng-if="main.curSL !== undefined">
+				<md-button flex ng-click="slLogin.logout()" class="md-whiteframe-z1">Logout</md-button>
 			</md-content>
 		</md-tab>
 	</md-tabs>
