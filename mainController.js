@@ -1,6 +1,6 @@
 'use strict';
 
-var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngMessages', 'ngCookies']);
+var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngMessages', 'ngCookies', 'ngAnimate']);
 
 cs106q.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {

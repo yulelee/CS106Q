@@ -30,7 +30,7 @@
 							<md-option ng-value="null" layout="center">
 								New Topic
 							</md-option>
-							<md-option ng-value="bucket" layout="center" ng-repeat="bucket in main.buckets | filter : filterConceptualBuckets | filter : searchTerm">
+							<md-option ng-value="bucket" layout="center" ng-repeat="bucket in main.buckets.waiting | filter : filterConceptualBuckets | filter : searchTerm">
 								{{bucket.description}}
 							</md-option>
 						</md-select>

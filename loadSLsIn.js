@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var async = require('async');
-
+var data = require('./initData.js')
 
 mongoose.connect('mongodb://localhost/CS106Q');
 
@@ -26,7 +26,20 @@ SL.remove({}, function() {
         });
     }, function() {
         Bucket.remove({}, function() {
-            mongoose.disconnect();
+            async.each(data.buckets, function(bucket, finishOneBucket) {
+                var newBucket = new Bucket({ 
+                    type: bucket.type,
+                    description: bucket.description, 
+                    class: bucket.class,
+                    students: bucket.students,
+                    studentSuids: bucket.studentSuids
+                });
+                newBucket.save(function(err) {
+                    finishOneBucket();
+                });
+            }, function(err) {
+                mongoose.disconnect();
+            });
         });
     });
 });
