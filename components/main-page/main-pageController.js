@@ -5,10 +5,43 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
 
         $scope.mainPageModel = {};
 
+        var mimic = function(a, b) {
+
+            // go through the first list, if the element is not in the second list, remove it from the first list
+            for (var i = 0; i < a.length; i++) {
+                var seen = false;
+                for (var j = 0; j < b.length; j++) {
+                    if (a[i]._id === b[j]._id) {
+                        seen = true;
+                        break;
+                    }
+                }
+                if (!seen) {
+                    a.splice(i, 1);
+                    i--;
+                }
+            }
+            // do the second pass, loop through the new bucket list, and insert potential new buckets
+            for (var k = 0; k < b.length; k++) {
+                if (a.length <= k || a[k]._id !== b[k]._id) {
+                    a.splice(k, 0, b[k]); // this element has to be at that index
+                }
+                // it's possible that there are more students in the bucket!
+                a[k].students = b[k].students;
+                a[k].studentSuids = b[k].studentSuids;
+            }
+
+        };
+
     	var getCurrentList = function (event, callback) {
     	    var GetCurrentList = $resource("/getCurrentList", {}, {get: {method: "get", isArray: false}});
     	    GetCurrentList.get({}, function(buckets) {
-                $scope.main.buckets = buckets;
+                if (!$scope.main.buckets) $scope.main.buckets = buckets;
+                else {
+                    mimic($scope.main.buckets.waiting, buckets.waiting);
+                    mimic($scope.main.buckets.helping, buckets.helping);
+                    mimic($scope.main.buckets.solved, buckets.solved);
+                }
     	        if (callback) callback();
     	    }, function(response) {
     	    	console.log(response);

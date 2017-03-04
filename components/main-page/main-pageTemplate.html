@@ -52,22 +52,24 @@
 
 	<md-tabs flex md-dynamic-height md-border-bottom md-stretch-tabs="always">
 		<md-tab layout="column" layout-align="center center" label="Waiting">
-			<md-card layout="column" layout-align="center strech" ng-repeat="bucket in main.buckets.waiting">
+			<md-card class="animate-bucket-repeat" layout="column" layout-align="center strech" ng-repeat="bucket in main.buckets.waiting">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>
 		</md-tab>
 
 		<md-tab ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Helping">
-			<md-card ng-repeat="bucket in main.buckets.helping">
+			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.helping">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>
 		</md-tab>
 
 		<md-tab ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Solved">
-			<md-card ng-repeat="bucket in main.buckets.solved">
+			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.solved">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>
 		</md-tab>
 	</md-tabs>
 
 </div>
+
+

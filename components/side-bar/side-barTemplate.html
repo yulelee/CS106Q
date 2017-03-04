@@ -79,16 +79,17 @@
 				</form>
 			</md-content>
 
-			<md-content ng-if="main.curSL !== undefined && main.curSL.currently_helping !== undefined">
+			<md-content class="animate-bucket-repeat" ng-if="main.curSL !== undefined && main.curSL.currently_helping !== undefined">
 				<md-subheader class="md-no-sticky">You are helping:</md-subheader>
 
 				<md-card>
-					<md-card-title>
+					<md-card-content>
 						<md-card-title-text>
-							<span class="md-headline">{{main.curSL.currently_helping.students[0]}}</span>
-							<span class="md-subhead">{{main.curSL.currently_helping.class}}, {{main.curSL.currently_helping.type}}</span>
+							<p class="md-headline">{{main.curSL.currently_helping.students[0]}}</p>
+							<p class="md-subhead">{{main.curSL.currently_helping.class}}, {{main.curSL.currently_helping.type}}</p>
+							<p>{{main.curSL.currently_helping.description}}</p>
 						</md-card-title-text>
-					</md-card-title>
+					</md-card-content>
 					<md-card-actions layout="row" layout-align="end center">
 						<md-button ng-click="main.putBackBucket(main.curSL.currently_helping._id)">Put Back</md-button>
 						<md-button ng-click="main.solveBucket(main.curSL.currently_helping._id)">Solved</md-button>
