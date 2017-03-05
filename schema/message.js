@@ -6,8 +6,7 @@ var messageSchema = new mongoose.Schema({
     slPoster: mongoose.Schema.Types.ObjectId,
     content: String,
     associatedBucket: mongoose.Schema.Types.ObjectId,
-    date_time: { type: Date, default: Date.now },
-    hasDeleted: [mongoose.Schema.Types.ObjectId]
+    date_time: { type: Date, default: Date.now }
 });
 
 var Message = mongoose.model('Message', messageSchema);

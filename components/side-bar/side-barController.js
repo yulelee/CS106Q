@@ -76,7 +76,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 
                 // store the login information in cookie
                 var expDate = new Date();
-                expDate.setMonth(expDate.getDay() + 2);
+                expDate.setMonth(expDate.getYear() + 1);
                 $cookies.put("logged_sl__id", sl._id, {expires: expDate});
                 $cookies.put("logged_sl_name", sl.name, {expires: expDate});
                 $scope.main.refreshEverything();

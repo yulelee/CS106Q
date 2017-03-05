@@ -152,11 +152,33 @@ queueHandler.solveBucket = function(req, res) {
 											content: req.body.message, 
 											associatedBucket: req.body.bucket_id
 										});
-										message.save(function(err, message) {
+										message.save(function(err, savedMessage) {
 										    if (err) {res.status(400).end('Error saving new message.');}
 										    else {
-										    	res.status(200).send(JSON.stringify(savedSL));
-										    	clientList.broadcastChange();
+										    	// add this message to all of the sls
+										    	SL.find({}, function(err, sls) {
+										    		if (err) {res.status(400).end('Error retrieving all sls.');}
+										    		else {
+										    			async.each(sls, function(sl, finishOneSl) {
+										    				sl.unreadMessages.push(savedMessage._id);
+										    				sl.save(function(err) {
+										    					if (err) { res.status(400).end('Error saving message to sl.'); }
+										    					else { finishOneSl(); }
+										    				});
+										    			}, function(err) {
+										    				if (err) { res.status(400).end('Error saving message to sl, final'); }
+										    				else {
+										    					SL.findOne({_id: req.session.sl_id}, function(err, sl) {
+										    						if (err) { res.status(400).end('Error finding the sl again at the end.'); }
+										    						else {
+										    							res.status(200).send(JSON.stringify(sl));
+										    							clientList.broadcastChange();
+										    						}
+										    					});
+										    				}
+										    			});
+										    		}
+										    	});
 										    }
 										});
 									}
