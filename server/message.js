@@ -10,7 +10,7 @@ var Message = require('../schema/message.js');
 var messageHandler = {};
 
 messageHandler.getMessageList = function(req, res) {
-	Message.find({}, function(err, messages) {
+	Message.find({}).sort({'date_time': -1}).limit(30).exec(function(err, messages) {
 		if (err) { res.status(400).send('Error finding messages.'); }
 		else {
 			messages = JSON.parse(JSON.stringify(messages));

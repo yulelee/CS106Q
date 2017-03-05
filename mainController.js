@@ -14,11 +14,15 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 		$scope.main = {};
 		$scope.main.buckets = undefined;
 
+		$scope.main.refreshEverything = function() {
+			$rootScope.$broadcast("refreshCurrentList");
+			$rootScope.$broadcast("refreshSLlist");
+			$rootScope.$broadcast("getMessageList");
+		};
+
 		var serverPushBackCallback = function () {
 			$scope.$apply(function () {
-				$rootScope.$broadcast("refreshCurrentList");
-				$rootScope.$broadcast("refreshSLlist");
-				$rootScope.$broadcast("getMessageList");
+				$scope.main.refreshEverything();
 			});
 		};
 
@@ -36,7 +40,7 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
 			GetSL.get({}, function(sl) {
 			    $scope.main.curSL = sl;
-			    $rootScope.$broadcast("refreshSLlist");
+			    $scope.main.refreshEverything();
 			}, function(err) {
 			    console.log(err);
 			});

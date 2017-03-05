@@ -1,7 +1,7 @@
 'use strict';
 
-cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$element',
-    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $element) {
+cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$element', '$mdDialog',
+    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $element, $mdDialog) {
     	$scope.form = {};
     	$scope.classes = ['CS106A', 'CS106B', 'CS106X'];
     	$scope.types = ['Debugging', 'Conceptual'];
@@ -79,7 +79,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 expDate.setMonth(expDate.getDay() + 2);
                 $cookies.put("logged_sl__id", sl._id, {expires: expDate});
                 $cookies.put("logged_sl_name", sl.name, {expires: expDate});
-                getCurSLlist();
+                $scope.main.refreshEverything();
             }, function(response) {
                 console.log(response);
             });
@@ -134,6 +134,22 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         };
 
         $scope.$on("getMessageList", getMessageList);
+
+        $scope.messageControl = {};
+
+        $scope.messageControl.showBucket = function(bucket) {
+            $mdDialog.show({
+                controller: messageShowBucketDetailController,
+                templateUrl: 'messageShowBucketDetail.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true,
+                locals: {bucket: bucket}
+            });
+        };
+
+        var messageShowBucketDetailController = function($scope, $mdDialog, bucket) {
+            $scope.bucket = bucket;
+        }
         
     }
 ]);
