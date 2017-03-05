@@ -157,6 +157,11 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                 message_id: message_id
             });
         };
+
+        $scope.messageControl.dismissAllMessages = function(message_id) {
+            var DismissMessage = $resource("/dismissAllMessages", {}, {post: {method: "post", isArray: false}});
+            DismissMessage.post({});
+        };
         
     }
 ]);

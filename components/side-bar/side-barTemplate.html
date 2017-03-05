@@ -145,7 +145,14 @@
 
 			<md-content ng-if="main.curSL !== undefined && main.slMessages !== undefined">
 				<md-list flex>
-					<md-subheader class="md-no-sticky">Messages:</md-subheader>
+					<md-subheader class="md-no-sticky">
+						<md-subheader-content layout="row" layout-align="space-between center">
+							<span>Messages:</span>
+							<span flex></span></span>
+							<h6 ng-click="messageControl.dismissAllMessages(message._id)" 
+								class="side-bar-message-box-small-button">dismiss all</h6>
+						<md-subheader-content>
+					</md-subheader>
 					<md-divider ></md-divider>
 					<div class="side-bar-message-box" ng-repeat="message in main.slMessages">
 						<div class="md-list-item-text" layout="column" layout-align="center stretch">

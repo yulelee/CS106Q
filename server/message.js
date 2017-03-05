@@ -65,6 +65,19 @@ messageHandler.dismissMessage = function(req, res) {
 	});
 };
 
+messageHandler.dismissAllMessages = function(req, res) {
+	SL.findOne({_id: req.session.sl_id}, function(err, sl) {
+		sl.unreadMessages.splice(0, sl.unreadMessages.length);
+		sl.save(function(err) {
+			if (err) { res.status(400).send('Error saving sl'); }
+			else {
+				res.status(200).send('Deleted.'); 
+				clientList.broadcastChange();
+			}
+		});
+	});
+};
+
 
 // deprecated one, when the message saved a list of users that has deleted it
 messageHandler.getMessageList_deprecated = function(req, res) {

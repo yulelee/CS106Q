@@ -39,6 +39,7 @@ app.get('/getSL', slLoginHandler.slLoginCheck, slHandler.getSL);
 
 app.get('/getMessageList', slLoginHandler.slLoginCheck, messageHandler.getMessageList);
 app.post('/dismissMessage', slLoginHandler.slLoginCheck, messageHandler.dismissMessage);
+app.post('/dismissAllMessages', slLoginHandler.slLoginCheck, messageHandler.dismissAllMessages);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);
