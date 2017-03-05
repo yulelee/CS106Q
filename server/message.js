@@ -23,14 +23,20 @@ messageHandler.getMessageList = function(req, res) {
 							if (err) { res.status(400).send('Error finding sl.'); }
 							else {
 								message.slPoster = JSON.parse(JSON.stringify(sl));
-								Bucket.findOne({_id: message.associatedBucket}, function(err, bucket) {
-									if (err) { res.status(400).send('Error finding bucket.'); }
-									else {
-										message.associatedBucket = JSON.parse(JSON.stringify(bucket));
-										unreadMessages.push(message);
-										finishOneMessage();
-									}
-								});
+								if (message.associatedBucket) {
+									Bucket.findOne({_id: message.associatedBucket}, function(err, bucket) {
+										if (err) { res.status(400).send('Error finding bucket.'); }
+										else {
+											message.associatedBucket = JSON.parse(JSON.stringify(bucket));
+											unreadMessages.push(message);
+											finishOneMessage();
+										}
+									});
+								}
+								else {
+									unreadMessages.push(message);
+									finishOneMessage();
+								}
 							}
 						});
 					}
@@ -75,6 +81,39 @@ messageHandler.dismissAllMessages = function(req, res) {
 				clientList.broadcastChange();
 			}
 		});
+	});
+};
+
+// these messages does not reply on a particular question bucket
+messageHandler.addMessageOutOfNowhere = function(req, res) {
+	var message = new Message({ 
+		slPoster: req.session.sl_id,
+		content: req.body.message, 
+		associatedBucket: undefined
+	});
+	message.save(function(err, savedMessage) {
+	    if (err) {res.status(400).end('Error saving new message.');}
+	    else {
+	    	// add this message to all of the sls
+	    	SL.find({}, function(err, sls) {
+	    		if (err) {res.status(400).end('Error retrieving all sls.');}
+	    		else {
+	    			async.each(sls, function(sl, finishOneSl) {
+	    				sl.unreadMessages.push(savedMessage._id);
+	    				sl.save(function(err) {
+	    					if (err) { res.status(400).end('Error saving message to sl.'); }
+	    					else { finishOneSl(); }
+	    				});
+	    			}, function(err) {
+	    				if (err) { res.status(400).end('Error saving message to sl, final'); }
+	    				else {
+	    					res.status(200).send('Message added!');
+	    					clientList.broadcastChange();
+	    				}
+	    			});
+	    		}
+	    	});
+	    }
 	});
 };
 

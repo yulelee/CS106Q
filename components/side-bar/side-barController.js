@@ -137,6 +137,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
 
         $scope.messageControl = {};
 
+        // show the bucket detail from the message bar
         $scope.messageControl.showBucket = function(bucket) {
             $mdDialog.show({
                 controller: messageShowBucketDetailController,
@@ -161,6 +162,36 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         $scope.messageControl.dismissAllMessages = function(message_id) {
             var DismissMessage = $resource("/dismissAllMessages", {}, {post: {method: "post", isArray: false}});
             DismissMessage.post({});
+        };
+
+        // add a message out of nowhere
+        $scope.messageControl.addMessageOutOfNowhere = function() {
+            $mdDialog.show({
+                controller: addMessageOutOfNowhereController,
+                templateUrl: 'addMessageOutOfNowhere.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            }).then(function(message) {
+                if (message.length > 0) {
+                    var AddMessageOutOfNowhere = $resource("/addMessageOutOfNowhere", {}, {post: {method: "post", isArray: false}});
+                    AddMessageOutOfNowhere.post({message: message});
+                }
+            }, function() {
+                console.log("No message being entered...");
+            });
+        };
+
+        var addMessageOutOfNowhereController = function($scope, $mdDialog) {
+            $scope.addMessagesDialogModel = {};
+            $scope.addMessagesDialogModel.message = '';
+
+            $scope.addMessagesDialogModel.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.addMessagesDialogModel.sendMessage = function(answer) {
+                $mdDialog.hide($scope.addMessagesDialogModel.message);
+            };
         };
         
     }
