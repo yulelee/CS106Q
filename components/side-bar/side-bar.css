@@ -7,42 +7,16 @@
 	margin-bottom: 15px;
 }
 
-/*.cs106q-side-bar-input-container {
-	margin: 10px;
+.side-bar-message-box {
 	padding: 5px;
-}
-*/
-/*.cs106q-bucket-picker-container {
-	height: 50%;
-	width: 20%;
-}*/
-
-.option {
-	width: 20%;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
-.selectdemoSelectHeader {
-/* Please note: All these selectors are only applied to children of elements with the 'selectdemoSelectHeader' class */ }
-
-.selectdemoSelectHeader .demo-header-searchbox {
-	border: none;
-	outline: none;
-	height: 100%;
-	width: 100%;
-	padding: 0; 
-}
-
-.selectdemoSelectHeader .demo-select-header {
-	box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
-	padding-left: 10.667px;
-	height: 48px;
-	cursor: pointer;
-	position: relative;
-	display: flex;
-	align-items: center;
-	width: auto; 
-}
-
-.selectdemoSelectHeader md-content._md {
-	max-height: 240px; 
+.side-bar-message-body {
+	text-align: justify;
+	margin-left: 10px;
+	margin-right: 10px;
+	line-height: 1.2em;
+	font-family: "Times New Roman", Times, serif;
 }

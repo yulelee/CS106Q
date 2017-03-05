@@ -8,6 +8,7 @@ mongoose.connect('mongodb://localhost/CS106Q');
 
 var SL = require('./schema/sl.js');
 var Bucket = require('./schema/bucket.js');
+var Message = require('./schema/message.js');
 
 var fs = require('fs');
 
@@ -38,7 +39,9 @@ SL.remove({}, function() {
                     finishOneBucket();
                 });
             }, function(err) {
-                mongoose.disconnect();
+                Message.remove({}, function() {
+                    mongoose.disconnect();
+                });
             });
         });
     });

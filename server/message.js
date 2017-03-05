@@ -18,11 +18,11 @@ messageHandler.getMessageList = function(req, res) {
 				SL.findOne({_id: message.slPoster}, function(err, sl) {
 					if (err) { res.status(400).send('Error finding sl.'); }
 					else {
-						message.slPoster = sl;
+						message.slPoster = JSON.parse(JSON.stringify(sl));
 						Bucket.findOne({_id: message.associatedBucket}, function(err, bucket) {
 							if (err) { res.status(400).send('Error finding bucket.'); }
 							else {
-								message.associatedBucket = bucket;
+								message.associatedBucket = JSON.parse(JSON.stringify(bucket));
 								finishOneMessage();
 							}
 						});
