@@ -15,12 +15,6 @@
 				<md-button class="main-page-button" ng-click="mainPageModel.pickBucket(bucket._id)" 
 					ng-if="!bucket.solved && main.curSL.suid !== undefined && bucket.helperSL === undefined && main.curSL.currently_helping === undefined">
 					Pick</md-button>
-				<!-- <md-button class="main-page-button" ng-click="mainPageModel.putBackBucket(bucket._id)" 
-					ng-if="!bucket.solved && bucket.helperSL._id === main.curSL._id">
-					Put Back</md-button>
-				<md-button class="main-page-button" ng-click="mainPageModel.solveBucket(bucket._id)" 
-					ng-if="!bucket.solved && bucket.helperSL._id === main.curSL._id">
-					Solved</md-button> -->
 				<div flex="none" layout="row" layout-align="center center"
 					ng-if="!bucket.solved && bucket.helperSL !== undefined"> 
 					<p5 flex>{{bucket.helperSL.name}} is helping.</p5>
@@ -46,6 +40,34 @@
 			</div>
 		</div>
 	</md-card-content>
+</script>
+
+<script type="text/ng-template" id="addMessageWhenSolve.html">
+
+	<md-dialog flex="50" aria-label="Anything to say?">
+		<form ng-cloak>
+			<md-toolbar>
+				<div class="md-toolbar-tools">
+					<h2>Anything to say?</h2>
+					<span flex></span>
+					<md-button class="md-icon-button" ng-click="addMessagesDialogModel.cancel()">
+						<i class="material-icons">close</i>
+					</md-button>
+				</div>
+			</md-toolbar>
+			<md-dialog-content class="solve-add-message-dialog-content">
+					<md-input-container flex layout="column" layout-align="center stretch">
+						<label>Message</label>
+						<textarea placeholder="It's OK to leave me blank :)" ng-required="false" 
+							class="solve-add-message-dialog-textarea"
+							ng-model="addMessagesDialogModel.message" rows="1" md-select-on-focus></textarea>
+					</md-input-container>
+					<div flex layout="row">
+						<md-button flex="grow" ng-click="addMessagesDialogModel.sendMessage()" class="md-whiteframe-z1">Solve</md-button>
+					</div>
+			</md-dialog-content>
+		</form>
+	</md-dialog>
 </script>
 
 <div layout="column" layout-align="center strech">

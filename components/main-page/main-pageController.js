@@ -1,7 +1,7 @@
 'use strict';
 
-cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies',
-    function($scope, $routeParams, $location, $resource, $rootScope, $cookies) {
+cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$mdDialog', 
+    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $mdDialog) {
 
         $scope.mainPageModel = {};
 
@@ -54,7 +54,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
 
         $scope.mainPageModel.removeBucket = function (bucket) {
             var DeleteBucket = $resource("/deleteBucket", {}, {post: {method: "post", isArray: false}});
-            console.log(bucket._id);
             DeleteBucket.post({bucketId: bucket._id}, function() {
                 console.log("deleted");
             }, function() {
@@ -89,10 +88,11 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
         // export this function to main
         $scope.main.putBackBucket = $scope.mainPageModel.putBackBucket;
 
-        $scope.mainPageModel.solveBucket = function(bucket_id) {
+        $scope.mainPageModel.solveBucket = function(bucket_id, message) {
             var SolveBucket = $resource("/solveBucket", {}, {post: {method: "post", isArray: false}});
             SolveBucket.post({
-                bucket_id: bucket_id
+                bucket_id: bucket_id,
+                message: message
             }, function(sl) {
                 $scope.main.curSL = sl;
             }, function(err) {
@@ -102,6 +102,34 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
 
         // export this function to main
         $scope.main.solveBucket = $scope.mainPageModel.solveBucket;
+
+        $scope.mainPageModel.showAddMessagesDialog = function(ev) {
+            $mdDialog.show({
+                controller: addMessagesDialogController,
+                templateUrl: 'addMessageWhenSolve.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: false
+            }).then(function(message) {
+                $scope.mainPageModel.solveBucket($scope.main.curSL.currently_helping._id, message.length > 0 ? message : undefined);
+            }, function() {
+                console.log("Not solved.");
+            });
+        };
+
+        $scope.main.showAddMessagesDialog = $scope.mainPageModel.showAddMessagesDialog;
+
+        var addMessagesDialogController = function($scope, $mdDialog) {
+            $scope.addMessagesDialogModel = {};
+            $scope.addMessagesDialogModel.message = '';
+
+            $scope.addMessagesDialogModel.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.addMessagesDialogModel.sendMessage = function(answer) {
+                $mdDialog.hide($scope.addMessagesDialogModel.message);
+            };
+        };
 
     }
 ]);
