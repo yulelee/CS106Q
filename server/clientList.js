@@ -36,7 +36,6 @@ clientList.registerClient = function(req, res) {
     // array and remove this connection.
     req.on("close", function() {
         var toRemove;
-        console.log("die one");
         for (var j =0 ; j < clientList.list.length ; j++) {
             if (clientList[j] == res) {
                 toRemove =j;

@@ -28,9 +28,17 @@ slLoginHandler.slLogin = function(req, res) {
                     req.session.save(function() {
                         sl.logged_in_sessionId = req.session.id;
                         sl.save(function() {
-                        	console.log(req.session);
-                            res.status(200).send(JSON.stringify(sl));
-                            clientList.broadcastChange();
+                            if (sl.currently_helping) {
+                                Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
+                                    sl.currently_helping = JSON.parse(JSON.stringify(bucket));
+                                    res.status(200).send(JSON.stringify(sl));
+                                    clientList.broadcastChange();
+                                });
+                            }
+                            else {
+                                res.status(200).send(JSON.stringify(sl));
+                                clientList.broadcastChange();
+                            }
                         });
                     });      
 	            } else {

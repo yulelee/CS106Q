@@ -68,7 +68,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             PickBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
-                console.log(sl);
                 $scope.main.curSL = sl;
             }, function(err) {
                 console.log(err);
@@ -81,7 +80,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             PutBackBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
-                console.log(sl);
                 $scope.main.curSL = sl;
             }, function(err) {
                 console.log(err);
@@ -96,7 +94,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             SolveBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
-                console.log(sl);
                 $scope.main.curSL = sl;
             }, function(err) {
                 console.log(err);

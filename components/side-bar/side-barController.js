@@ -72,7 +72,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             slLogin.slLogin({
                 suid: $scope.slLogin.suid
             }, function(sl) {
-                console.log(sl);
                 $scope.main.curSL = sl;
                 
                 // store the login information in cookie

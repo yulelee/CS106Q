@@ -160,7 +160,6 @@ queueHandler.putBackBucket = function(req, res) {
 			if (bucket.helperSL === undefined) { res.status(400).send('Error bucket not marked as being helped.'); }
 			else {
 				SL.findOne({_id: bucket.helperSL}, "", function(err, sl) {
-					console.log(sl);
 					if (err || sl.currently_helping === undefined) { res.status(400).send('Error sl not marked as being helping.'); }
 					else {
 						sl.currently_helping = undefined;
