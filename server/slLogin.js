@@ -4,6 +4,8 @@ var async = require('async');
 
 var SL = require('../schema/sl.js');
 var clientList = require('./clientList.js');
+var Bucket = require('../schema/bucket.js');
+
 
 var slLoginHandler = {};
 
@@ -30,6 +32,7 @@ slLoginHandler.slLogin = function(req, res) {
                         sl.save(function() {
                             if (sl.currently_helping) {
                                 Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
+                                    sl = JSON.parse(JSON.stringify(sl));
                                     sl.currently_helping = JSON.parse(JSON.stringify(bucket));
                                     res.status(200).send(JSON.stringify(sl));
                                     clientList.broadcastChange();
