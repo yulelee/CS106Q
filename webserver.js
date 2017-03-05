@@ -20,6 +20,7 @@ app.use(session({
 var slLoginHandler = require('./server/slLogin.js');
 var slHandler = require('./server/sl.js');
 var queueHandler = require('./server/queue.js');
+var messageHandler = require('./server/message.js');
 
 app.post('/putnew', queueHandler.putNew);
 app.post('/insertNew', queueHandler.insertNew);
@@ -35,6 +36,8 @@ app.post('/slLogout', slLoginHandler.slLoginCheck, slLoginHandler.slLogout);
 
 app.get('/getCurSLlist', slLoginHandler.slLoginCheck, slHandler.getCurSLlist);
 app.get('/getSL', slLoginHandler.slLoginCheck, slHandler.getSL);
+
+app.get('/getMessageList', slLoginHandler.slLoginCheck, messageHandler.getMessageList);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);

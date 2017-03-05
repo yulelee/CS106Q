@@ -5,6 +5,7 @@ var async = require('async');
 var Bucket = require('../schema/bucket.js');
 var clientList = require('./clientList.js');
 var SL = require('../schema/sl.js');
+var Message = require('../schema/message.js');
 
 var queueHandler = {};
 
@@ -132,20 +133,40 @@ queueHandler.solveBucket = function(req, res) {
 	Bucket.findOne({_id: req.body.bucket_id}, "", function (err, bucket) {
 		if (err) {res.status(400).send('Error bucket not existing.');}
 		else {
+			// mark resolved
 			bucket.solved = true;
 			bucket.save(function(err, savedBucket) {
 				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
 					if (err) { res.status(400).send('Error retrieving the sl.'); }
 					else {
-						if (sl) { sl.currently_helping = undefined; }
-						else { res.status(400).send('You are not helping.'); }
-						sl.save(function(err, savedSL) {
-							if (err) { res.status(400).send('Error saving the sl.'); }
-							else {
-								res.status(200).send(JSON.stringify(savedSL));
-								clientList.broadcastChange();
-							}
-						});
+						if (!sl) { res.status(400).send('You are not helping.'); }
+						else {
+							// mark sl free
+							sl.currently_helping = undefined;
+							sl.save(function(err, savedSL) {
+								if (err) { res.status(400).send('Error saving the sl.'); }
+								else {
+									if (req.body.message) {
+										var message = new Message({ 
+											slPoster: req.session.sl_id,
+											content: req.body.message, 
+											associatedBucket: req.body.bucket_id
+										});
+										message.save(function(err, message) {
+										    if (err) {res.status(400).end('Error saving new message.');}
+										    else {
+										    	res.status(200).send(JSON.stringify(savedSL));
+										    	clientList.broadcastChange();
+										    }
+										});
+									}
+									else {
+										res.status(200).send(JSON.stringify(savedSL));
+										clientList.broadcastChange();
+									}
+								}
+							});
+						}
 					}
 				});
 			});

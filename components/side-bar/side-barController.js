@@ -122,6 +122,18 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         if ($scope.main.curSLsuid !== undefined) { getCurSLlist(); }
 
         $scope.$on("refreshSLlist", getCurSLlist);
+
+        var getMessageList = function() {
+            var GetMessageList = $resource("/getMessageList", {}, {get: {method: "get", isArray: true}});
+            GetMessageList.get({
+            }, function(list) {
+                $scope.main.slMessages = list;
+            }, function(res) {
+                console.log(res);
+            });
+        };
+
+        $scope.$on("getMessageList", getMessageList);
         
     }
 ]);

@@ -18,15 +18,18 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 			$scope.$apply(function () {
 				$rootScope.$broadcast("refreshCurrentList");
 				$rootScope.$broadcast("refreshSLlist");
+				$rootScope.$broadcast("getMessageList");
 			});
 		};
 
 		var serverPushBack = new EventSource('/registerClient');
 		serverPushBack.addEventListener('message', serverPushBackCallback, false);
 
-
 		// whether this is a section leader
 		$scope.main.curSL = undefined;
+
+		// the messages to show on the side bar
+		$scope.main.slMessages = undefined;
 
 		// if there is a sl in cookie, this means that there is a sl logged-in, therefore automatically log in.
 		if ($cookies.get('logged_sl__id')) {
