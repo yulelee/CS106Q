@@ -153,7 +153,7 @@
 								<h6 >Posted by: {{message.slPoster.name}}</h6>
 								<span flex></span>
 								<h6 ng-click="messageControl.showBucket(message.associatedBucket)" class="side-bar-message-box-small-button">See Question</h6>
-								<h6 class="side-bar-message-box-small-button">Dismiss</h6>
+								<h6 ng-click="messageControl.dismissMessage(message._id)" class="side-bar-message-box-small-button">Dismiss</h6>
 							</div>
 							<p class="side-bar-message-body">{{message.content}}</p>
 						</div>
