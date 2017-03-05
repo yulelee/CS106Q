@@ -16,11 +16,11 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     		$scope.newBucket.class = 'CS106A';
     		$scope.newBucket.type = 'Debugging';
             $scope.newBucket.existingPick = null;
-        };
+    	};
 
-        clearRegisterForm();
+    	clearRegisterForm();
 
-        $scope.newBucket.doRegister = function() {
+    	$scope.newBucket.doRegister = function() {
             if ($scope.newBucket.type === 'Conceptual' && $scope.newBucket.existingPick !== null) {
                 var newBucketRegister = $resource("/insertNew", {}, {insertNew: {method: "post", isArray: false}});
                 newBucketRegister.insertNew({
@@ -40,22 +40,22 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             else {
                 var newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
                 newBucketRegister.putnew({
-                  suid: $scope.newBucket.suid, 
-                  studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
-                  description: $scope.newBucket.description,
-                  class: $scope.newBucket.class,
-                  type: $scope.newBucket.type
-              }, function(user) {
-               console.log(user);
-               $scope.form.studentRegister.$setPristine();
-               $scope.form.studentRegister.$setUntouched();
-               clearRegisterForm();
-               $rootScope.$broadcast("refreshCurrentList");
-           }, function(response) {
-               console.log(response);
-           });
+        	    	suid: $scope.newBucket.suid, 
+        	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
+        	    	description: $scope.newBucket.description,
+        	    	class: $scope.newBucket.class,
+        	    	type: $scope.newBucket.type
+        	    }, function(user) {
+        	        console.log(user);
+        	        $scope.form.studentRegister.$setPristine();
+        	        $scope.form.studentRegister.$setUntouched();
+        	        clearRegisterForm();
+                    $rootScope.$broadcast("refreshCurrentList");
+        	    }, function(response) {
+        	        console.log(response);
+        	    });
             }
-        };
+    	};
 
         $scope.filterConceptualBuckets = function(bucket) {
             console.log(bucket);
