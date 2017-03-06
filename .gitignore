@@ -45,6 +45,7 @@ bin
 *.class
 *.classpath
 *.project
+*.json
 
 # images 
 images
