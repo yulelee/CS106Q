@@ -41,7 +41,8 @@ queueHandler.putNew = function(req, res) {
 	            	class: req.body.class,
 	            	students: [req.body.studentName],
 	            	studentSuids: [req.body.suid],
-	            	helperSL: undefined
+	            	helperSL: undefined,
+	            	position: req.body.position
 	            });
 	            bucket.save(function(err, bucket) {
 	                if (err) {res.status(400).end('Error saving new bucket.');}

@@ -7,6 +7,7 @@ var bucketSchema = new mongoose.Schema({
         type: String,
         enum: ['Debugging', 'Conceptual']
     },
+    position: String,
     description: String, 
     date_time: {
     	type: Date, 

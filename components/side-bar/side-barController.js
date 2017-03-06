@@ -16,6 +16,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     		$scope.newBucket.class = 'CS106A';
     		$scope.newBucket.type = 'Debugging';
             $scope.newBucket.existingPick = null;
+            $scope.newBucket.position = undefined;
     	};
 
     	clearRegisterForm();
@@ -44,7 +45,8 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
         	    	description: $scope.newBucket.description,
         	    	class: $scope.newBucket.class,
-        	    	type: $scope.newBucket.type
+        	    	type: $scope.newBucket.type,
+                    position: $scope.newBucket.position
         	    }, function(user) {
         	        console.log(user);
         	        $scope.form.studentRegister.$setPristine();
@@ -192,6 +194,22 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             $scope.addMessagesDialogModel.sendMessage = function(answer) {
                 $mdDialog.hide($scope.addMessagesDialogModel.message);
             };
+        };
+
+        $scope.slCurHelpingControl = {};
+        $scope.slCurHelpingControl.lookAtMap = function(position) {
+            $mdDialog.show({
+                locals: {position: position},
+                controller: lookAtMapDialogController,
+                templateUrl: 'lookAtMapDialog.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        var lookAtMapDialogController = function($scope, $mdDialog, position) {
+            $scope.lookAtMapDialogControllerModel = {};
+            $scope.lookAtMapDialogControllerModel.position = position;
         };
         
     }

@@ -33,7 +33,8 @@ SL.remove({}, function() {
                     description: bucket.description, 
                     class: bucket.class,
                     students: bucket.students,
-                    studentSuids: bucket.studentSuids
+                    studentSuids: bucket.studentSuids,
+                    position: bucket.position
                 });
                 newBucket.save(function(err) {
                     finishOneBucket();

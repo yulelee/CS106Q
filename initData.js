@@ -8,7 +8,8 @@ var b1 = {
    description: 'How to make a pancake?', 
    class: 'CS106A',
    students: ['Tomas Jefferson', 'Tomas Edison'],
-   studentSuids: ['jeff5', 'edy']
+   studentSuids: ['jeff5', 'edy'],
+   position: '23'
 };
 
 var b2 = {
@@ -16,7 +17,8 @@ var b2 = {
    description: 'Who are you!!!', 
    class: 'CS106B',
    students: ['James Moody'],
-   studentSuids: ['moo93']
+   studentSuids: ['moo93'],
+   position: '23'
 };
 
 var b3 = {
@@ -24,7 +26,8 @@ var b3 = {
    description: 'Problem 4', 
    class: 'CS106B',
    students: ['Micheal Jackson'],
-   studentSuids: ['jackson5']
+   studentSuids: ['jackson5'],
+   position: '25'
 };
 
 var b4 = {
@@ -32,7 +35,8 @@ var b4 = {
    description: 'Linked List is not working, damn', 
    class: 'CS106B',
    students: ['Yue Yue'],
-   studentSuids: ['yule']
+   studentSuids: ['yule'],
+   position: '22'
 };
 
 var b5 = {
@@ -40,7 +44,8 @@ var b5 = {
    description: 'I can\' open QT...', 
    class: 'CS106B',
    students: ['Qurry Jase', 'John Snow'],
-   studentSuids: ['jase4', 'snow']
+   studentSuids: ['jase4', 'snow'],
+   position: '1'
 };
 
 var b6 = {
@@ -48,7 +53,8 @@ var b6 = {
    description: 'Flood like flood.', 
    class: 'CS106A',
    students: ['Elise Landau'],
-   studentSuids: ['elel']
+   studentSuids: ['elel'],
+   position: '4'
 };
 
 var b7 = {
@@ -56,7 +62,8 @@ var b7 = {
    description: 'I am so sleepy.', 
    class: 'CS106A',
    students: ['Snor Lax'],
-   studentSuids: ['poke4']
+   studentSuids: ['poke4'],
+   position: '22'
 };
 
 var b8 = {
@@ -64,7 +71,8 @@ var b8 = {
    description: 'This is really weird, where is the lecture?', 
    class: 'CS106B',
    students: ['Amy Center'],
-   studentSuids: ['cerany']
+   studentSuids: ['cerany'],
+   position: '15'
 };
 
 data.buckets = [b1, b2, b3, b4, b5, b6, b7, b8];
