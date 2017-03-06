@@ -207,6 +207,9 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             });
         };
 
+        // export this functionality to main
+        $scope.main.lookAtMap = $scope.slCurHelpingControl.lookAtMap;
+
         var lookAtMapDialogController = function($scope, $mdDialog, position) {
             $scope.lookAtMapDialogControllerModel = {};
             $scope.lookAtMapDialogControllerModel.position = position;

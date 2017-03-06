@@ -11,7 +11,8 @@
 				</div>
 
 				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>Position: {{bucket.position}}</p5>
+					<p5 flex ng-click="main.lookAtMap(bucket.position)" 
+						class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
 				</div>
 			</div>
 

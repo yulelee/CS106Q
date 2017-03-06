@@ -45,3 +45,6 @@ bin
 *.class
 *.classpath
 *.project
+
+# images 
+images
