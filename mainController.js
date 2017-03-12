@@ -18,6 +18,7 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 			$rootScope.$broadcast("refreshCurrentList");
 			$rootScope.$broadcast("refreshSLlist");
 			$rootScope.$broadcast("getMessageList");
+			$rootScope.$broadcast("getCurInfo");
 		};
 
 		var serverPushBackCallback = function () {
@@ -34,6 +35,9 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 
 		// the messages to show on the side bar
 		$scope.main.slMessages = undefined;
+
+		// the basic info for the queue
+		$scope.main.queueInfo = undefined;
 
 		// if there is a sl in cookie, this means that there is a sl logged-in, therefore automatically log in.
 		if ($cookies.get('logged_sl__id')) {

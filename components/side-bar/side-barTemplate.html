@@ -153,6 +153,18 @@
 				</form>
 			</md-content>
 
+			<md-content ng-if="main.curSL !== undefined && main.queueInfo !== undefined">
+				<md-subheader class="md-no-sticky">Queue Info:</md-subheader>
+				<md-card>
+					<md-card-content>
+						<md-card-title-text>
+							<p class="side-bar-queue-info">Students Waiting: {{main.queueInfo.waitingBucketCount}}</p>
+							<p class="side-bar-queue-info">Estimate Waiting Time: {{main.queueInfo.waitingTime}} min</p>
+						</md-card-title-text>
+					</md-card-content>
+				</md-card>
+			</md-content>
+
 			<md-content class="animate-bucket-repeat" ng-if="main.curSL !== undefined && main.curSL.currently_helping !== undefined">
 				<md-subheader class="md-no-sticky">You are helping:</md-subheader>
 

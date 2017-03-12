@@ -214,6 +214,20 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             $scope.lookAtMapDialogControllerModel = {};
             $scope.lookAtMapDialogControllerModel.position = position;
         };
+
+        var getCurInfo = function() {
+            var GetCurInfo = $resource("/getCurInfo", {}, {get: {method: "get", isArray: false}});
+            GetCurInfo.get({
+            }, function(info) {
+                info.waitingTime = Math.round(info.waitingTime);
+                $scope.main.queueInfo = info;
+            }, function(res) {
+                console.log(res);
+            });
+        };
+
+        $scope.$on("getCurInfo", getCurInfo);
+        getCurInfo(); // execute once at the beginning
         
     }
 ]);
