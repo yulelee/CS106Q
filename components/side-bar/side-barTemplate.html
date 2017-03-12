@@ -70,7 +70,7 @@
 
 <md-content flex layout="column" layout-align="center stretch">
 	<md-tabs flex md-border-bottom md-stretch-tabs="always">
-		<md-tab layout="column" layout-align="center" label="Students">
+		<md-tab layout="column" layout-align="center" label="Students" ng-disabled="main.curSL !== undefined">
 			<div flex layout="column" layout-align="center center" ><h4 class="cs106q-side-bar-title">Register</h4></div>
 			<form flex layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
 				<md-input-container class="md-block cs106q-side-bar-input-container">

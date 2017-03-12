@@ -1,22 +1,34 @@
 <script type="text/ng-template" id="bucketList.html">
 	<md-card-content>
-		<div flex layout="row" layout-sm="column" layout-align="start center">
-			<div flex layout="row" layout-align="start center">
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.type}}</p5>
+		<div flex layout-gt-sm="row" layout-sm="column" layout-align="start end" layout-align-sm="center center">
+			<div flex layout="row" layout-sm="column" 
+				layout-xs="column" layout-align="start center" 
+				layout-align-sm="center center" layout-align-xs="center center" 
+				class="main-page-small-buttons-container">
+				<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.type}}</p5>
+					</div>
+
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.class}}</p5>
+					</div>
 				</div>
 
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.class}}</p5>
-				</div>
+				<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
 
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex ng-click="main.lookAtMap(bucket.position)" 
-						class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex ng-click="main.lookAtMap(bucket.position)" 
+							class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
+					</div>
+
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.date_time}}</p5>
+					</div>
 				</div>
 			</div>
 
-			<div flex layout="row" layout-align="end center" ng-if="main.curSL">
+			<div flex="nogrow" layout="row" layout-align="center center" ng-if="main.curSL">
 				<md-button class="main-page-button" ng-click="mainPageModel.pickBucket(bucket._id)" 
 					ng-if="!bucket.solved && main.curSL.suid !== undefined && bucket.helperSL === undefined && main.curSL.currently_helping === undefined">
 					Pick</md-button>
@@ -31,7 +43,7 @@
 			</div>
 		</div>
 		
-		<div flex layout="row" layout-sm="column" layout-align="start strech">
+		<div flex layout="row" layout-sm="column" layout-xs="column" layout-align="start strech">
 			<div flex layout="column" layout-align="start center"> 
 				<h4 ng-if="bucket.students.length > 1">Students</h4>
 				<h4 ng-if="bucket.students.length == 1">Student</h4>
@@ -75,22 +87,21 @@
 	</md-dialog>
 </script>
 
-<div layout="column" layout-align="center strech">
-
-	<md-tabs flex md-dynamic-height md-border-bottom md-stretch-tabs="always">
-		<md-tab layout="column" layout-align="center center" label="Waiting">
+<md-content flex layout="column" layout-align="center stretch">
+	<md-tabs flex md-border-bottom md-stretch-tabs="always">
+		<md-tab flex layout="column" layout-align="center center" label="Waiting">
 			<md-card class="animate-bucket-repeat" layout="column" layout-align="center strech" ng-repeat="bucket in main.buckets.waiting">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>
 		</md-tab>
 
-		<md-tab ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Helping">
+		<md-tab flex ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Helping">
 			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.helping">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>
 		</md-tab>
 
-		<md-tab ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Solved">
+		<md-tab flex ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Solved">
 			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.solved">
 				<div ng-include="'bucketList.html'"></div>
 			</md-card>

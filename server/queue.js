@@ -102,7 +102,7 @@ queueHandler.getCurrentList = function(req, res) {
 				else {
 					tempBucketList = tempBucketList.concat(JSON.parse(JSON.stringify(unsolvedBuckets))); // have everything in one list
 					async.each(tempBucketList, function(bucket, finishOneBucket) {
-					    bucket.date_time = new Date(bucket.date_time).toLocaleString();
+					    bucket.date_time = new Date(bucket.date_time).toLocaleTimeString('en-US', {hour12: true, hour: "2-digit", minute: "2-digit"});
 					    if (bucket.helperSL) {
 					    	SL.findOne({_id: bucket.helperSL}, "", function(err, sl) { // if there is a helper, replace the _id with the actual object
 					    		if (err) { res.status(400).send('Error retrieving sl.'); }

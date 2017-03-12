@@ -37,8 +37,8 @@
                 <div flex layout="column" layout-align="center stretch" ng-include="'components/side-bar/side-barTemplate.html'" ng-controller="SideBarController"></div>
             </md-sidenav>
 
-            <md-content flex id="content">
-                <div ng-view></div>
+            <md-content flex layout="column" id="content">
+                <div flex layout="column" layout-align="center stretch" ng-include="'components/main-page/main-pageTemplate.html'" ng-controller="MainPageController"></div>
             </md-content>
 
         </div>
