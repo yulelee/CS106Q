@@ -34,7 +34,7 @@
         <div flex layout="row">
 
             <md-sidenav layout="column" md-is-locked-open="true" class="md-whiteframe-z1">
-                <div ng-include="'components/side-bar/side-barTemplate.html'" ng-controller="SideBarController"></div>
+                <div flex layout="column" layout-align="center stretch" ng-include="'components/side-bar/side-barTemplate.html'" ng-controller="SideBarController"></div>
             </md-sidenav>
 
             <md-content flex id="content">

@@ -3,7 +3,7 @@
 }
 
 .cs106q-side-bar-title {
-	margin-top: 15px;
+	margin-top: 25px;
 	margin-bottom: 15px;
 }
 
@@ -37,3 +37,5 @@
 .side-bar-queue-info {
 	margin: 3px;
 }
+
+.md-errors-spacer { display: none; }
