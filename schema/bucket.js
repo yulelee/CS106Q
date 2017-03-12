@@ -20,7 +20,15 @@ var bucketSchema = new mongoose.Schema({
     students: [String],
     studentSuids: [String],
     solved: {type: Boolean, default:  false},
-    helperSL: {type: mongoose.Schema.Types.ObjectId, default:  undefined}
+    helperSL: {type: mongoose.Schema.Types.ObjectId, default:  undefined},
+    helpStartTime: {
+        type: Date, 
+        default: undefined
+    }, 
+    helpEndTime: {
+        type: Date, 
+        default: undefined
+    }
 });
 
 var Bucket = mongoose.model('Bucket', bucketSchema);

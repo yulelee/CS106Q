@@ -25,6 +25,7 @@ var messageHandler = require('./server/message.js');
 app.post('/putnew', queueHandler.putNew);
 app.post('/insertNew', queueHandler.insertNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
+app.get('/getCurInfo', queueHandler.getCurInfo);
 
 app.post('/deleteBucket', slLoginHandler.slLoginCheck, queueHandler.deleteBucket);
 app.post('/pickBucket', slLoginHandler.slLoginCheck, queueHandler.pickBucket);
@@ -48,3 +49,8 @@ app.get('/registerClient', clientList.registerClient);
 app.listen(3000, function () {
 	console.log('Example app listening on port 3000!');
 });
+
+// mainly for update the remaining time
+setInterval(function() {
+	clientList.broadcastChange();
+}, 1000 * 60);

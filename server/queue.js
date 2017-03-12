@@ -9,6 +9,35 @@ var Message = require('../schema/message.js');
 
 var queueHandler = {};
 
+var averageHelpingTime = 20.0; // 20 min
+
+queueHandler.getCurInfo = function(req, res) {
+	var info = {};
+	var curDate = new Date();
+	Bucket.count({helperSL: undefined}, function(err, waitingBucketCount) {
+		if (err) { res.status(400).end('Error counting unresolved buckets'); }
+		else {
+			info.waitingBucketCount = waitingBucketCount;
+			SL.count({logged_in_sessionId: {$ne : undefined}}, function(err, loggedInSlCount) {
+				if (err) { res.status(400).end('Error counting sls'); }
+				else {
+					if (loggedInSlCount === 0) {
+						info.waitingTime = 9999; // special value, maybe we should change this...
+						res.status(200).end(JSON.stringify(info));
+					}
+					else {
+						Bucket.find({helperSL: {$ne : undefined}, solved: false}).sort({helpStartTime: -1}).limit(1).exec(function(err, newestStartedHelpedBucket) {
+							var needTime = newestStartedHelpedBucket.length === 0 ? 0 : (averageHelpingTime - ((new Date()) - newestStartedHelpedBucket[0].helpStartTime) / 1000 / 60); // time needed to end this one
+							info.waitingTime = needTime + waitingBucketCount * averageHelpingTime / loggedInSlCount;
+							res.status(200).end(JSON.stringify(info));
+						});
+					}
+				}
+			});
+		}
+	});
+};
+
 queueHandler.insertNew = function(req, res) {
 	Bucket.findOne({_id: req.body._id}, function(err, bucket) {
 	    if (err) {res.status(400).end('Error checking existing SUID.');}
@@ -136,6 +165,7 @@ queueHandler.solveBucket = function(req, res) {
 		else {
 			// mark resolved
 			bucket.solved = true;
+			bucket.helpEndTime = new Date(); // record the end time
 			bucket.save(function(err, savedBucket) {
 				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
 					if (err) { res.status(400).send('Error retrieving the sl.'); }
@@ -211,6 +241,7 @@ queueHandler.putBackBucket = function(req, res) {
 							if (err) { res.status(400).send('Error saving the sl.'); }
 							else {
 								bucket.helperSL = undefined;
+								bucket.helpStartTime = undefined; // erase the starting time of this help
 								bucket.save(function(err) {
 									if (err) { res.status(400).send('Error saving the bucket.'); }
 									else {
@@ -239,6 +270,7 @@ queueHandler.pickBucket = function(req, res) {
                         if (bucket.helperSL !== undefined || bucket.solved) { res.status(400).send('Somebody already helping or helped!'); }
                         else {
                         	bucket.helperSL = sl._id;
+                        	bucket.helpStartTime = new Date(); // record the current time
                         	bucket.save(function(err) {
                         	    if (err) { res.status(400).send('Error saving bucket!'); }
                         	    else {
