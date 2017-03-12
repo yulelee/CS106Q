@@ -6,6 +6,8 @@ mongoose.connect('mongodb://localhost/CS106Q');
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var MongoStore = require('connect-mongo')(session);
+var mongoStore = new MongoStore({mongooseConnection: mongoose.connection});
 
 var app = express();
 
@@ -15,6 +17,7 @@ app.use(session({
     secret: 'secretKey',
     resave: false,
     saveUninitialized: false,
+    store: mongoStore
 }));
 
 var slLoginHandler = require('./server/slLogin.js');
@@ -32,7 +35,7 @@ app.post('/pickBucket', slLoginHandler.slLoginCheck, queueHandler.pickBucket);
 app.post('/putBackBucket', slLoginHandler.slLoginCheck, queueHandler.putBackBucket);
 app.post('/solveBucket', slLoginHandler.slLoginCheck, queueHandler.solveBucket);
 
-app.post('/slLogin', slLoginHandler.slLogin);
+app.post('/slLogin', function(req, res, next) {req.mongoStore = mongoStore; next();}, slLoginHandler.slLogin); // inject the store
 app.post('/slLogout', slLoginHandler.slLoginCheck, slLoginHandler.slLogout);
 
 app.get('/getCurSLlist', slLoginHandler.slLoginCheck, slHandler.getCurSLlist);

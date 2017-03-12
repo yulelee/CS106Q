@@ -5,6 +5,9 @@ var async = require('async');
 var SL = require('../schema/sl.js');
 var clientList = require('./clientList.js');
 var Bucket = require('../schema/bucket.js');
+var MongoStore = require('connect-mongo');
+var session = require('express-session');
+
 
 
 var slLoginHandler = {};
@@ -19,12 +22,20 @@ slLoginHandler.slLoginCheck = function(req, res, next) {
     });
 };
 
-slLoginHandler.slLogin = function(req, res) {
+var removeOldSession = function(store, session_id) {
+    store.destroy(session_id, function(err) {
+        if (err) { res.status(400).send('Error destroying the old session.'); }
+        else { clientList.broadcastChange(); }
+    });
+};
+
+slLoginHandler.slLogin = function(req, res, m) {
 	if (req.body.suid) {
 	    SL.findOne({suid: req.body.suid}, function(err, sl) {
-	        if (err) {res.status(400).send('Error.');}
+	        if (err) {res.status(400).send('Error finding sl by suid.');}
 	        else {
-	            if (sl) {
+                if (sl) {
+                    if (sl.logged_in_sessionId != undefined) { removeOldSession(req.mongoStore, sl.logged_in_sessionId); }
                     req.session.sl_id = sl._id;
                     req.session.slSuid = req.body.suid;
                     req.session.save(function() {
@@ -43,10 +54,10 @@ slLoginHandler.slLogin = function(req, res) {
                                 clientList.broadcastChange();
                             }
                         });
-                    });      
-	            } else {
-	                res.status(400).send('SUID not found.');
-	            }
+                    });
+                } else {
+                    res.status(400).send('SUID not found.');
+                }
 	        }
 	    });
 	}
@@ -60,7 +71,7 @@ slLoginHandler.slLogout = function(req, res) {
                 sl.logged_in_sessionId = undefined;
                 sl.save(function() {
                     req.session.destroy(function() {
-                        res.status(200).send('logged out successfully.'); 
+                        res.status(200).send('logged out successfully.');
                         clientList.broadcastChange();
                     });
                 });

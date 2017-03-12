@@ -12,6 +12,7 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 			$rootScope.$broadcast("refreshSLlist");
 			$rootScope.$broadcast("getMessageList");
 			$rootScope.$broadcast("getCurInfo");
+			$rootScope.$broadcast("refreshSL");
 		};
 
 		var serverPushBackCallback = function () {
@@ -42,5 +43,18 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 			    console.log(err);
 			});
 		}
+
+		var refreshSL = function() {
+			if ($scope.main.curSL && $cookies.get('logged_sl__id') && $scope.main.curSL._id === $cookies.get('logged_sl__id')) {
+				var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
+				GetSL.get({}, function(sl) {
+				    $scope.main.curSL = sl;
+				}, function(err) {
+				    console.log(err);
+				});
+			}
+		};
+
+		$scope.$on("refreshSL", refreshSL);
 	}
 ]);
