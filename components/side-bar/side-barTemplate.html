@@ -193,6 +193,16 @@
 				</md-list>
 			</md-content>
 
+			<md-content ng-if="main.curSL !== undefined">
+				<md-subheader class="md-no-sticky">Search History:</md-subheader>
+				<form name="smallSearchBar" ng-submit="search.submitSearch()" flex layout="row" layout-align="space-between center"
+					class="side-bar-search-container">
+					<md-input-container flex md-no-float>
+		                <input ng-model="search.keyword" placeholder="Enter search">
+		            </md-input-container>
+	            </form>
+			</md-content>
+
 			<md-content ng-if="main.curSL !== undefined && main.slMessages !== undefined">
 				<md-list flex>
 					<md-subheader class="md-no-sticky">

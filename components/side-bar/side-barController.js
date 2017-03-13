@@ -228,6 +228,51 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
 
         $scope.$on("getCurInfo", getCurInfo);
         getCurInfo(); // execute once at the beginning
+
+        // search the database
+        $scope.search = {};
+        $scope.search.keyword = undefined;
+        $scope.search.keywordSearchResult = undefined;
+        $scope.search.suidSearchResult = undefined;
+
+        var searchForKeyWordHistory = function() {
+            return new Promise(function(resolve, reject) {
+                if ($scope.search.keyword.length === 0) { reject(); }
+                var SearchDescriptionKeyWordsHistory = $resource("/searchDescriptionKeyWordsHistory", {}, {get: {method: "get", isArray: true}});
+                SearchDescriptionKeyWordsHistory.get({
+                    keyword: $scope.search.keyword
+                }, function(result) {
+                    $scope.search.keywordSearchResult = result;
+                    resolve();
+                }, function(response) {
+                    reject();
+                });
+            });
+        };
+
+        var searchForSuidHistory = function() {
+            return new Promise(function(resolve, reject) {
+                if ($scope.search.keyword.length === 0) { reject(); }
+                var SearchSuidHistory = $resource("/searchSuidHistory", {}, {get: {method: "get", isArray: true}});
+                SearchSuidHistory.get({
+                    suid: $scope.search.keyword
+                }, function(result) {
+                    $scope.search.suidSearchResult = result;
+                    resolve();
+                }, function(response) {
+                    reject();
+                });
+            });
+        };
+
+        $scope.search.submitSearch = function() {
+            Promise.all([searchForKeyWordHistory(), searchForSuidHistory()]).then(function() {
+                console.log($scope.search.suidSearchResult);
+                console.log($scope.search.keywordSearchResult);
+            }).catch(function() {
+                console.log('Search failed, maybe the search box is empty.');
+            }); 
+        };
         
     }
 ]);

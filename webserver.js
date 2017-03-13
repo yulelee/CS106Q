@@ -24,6 +24,7 @@ var slLoginHandler = require('./server/slLogin.js');
 var slHandler = require('./server/sl.js');
 var queueHandler = require('./server/queue.js');
 var messageHandler = require('./server/message.js');
+var databaseHandler = require('./server/database.js');
 
 app.post('/putnew', queueHandler.putNew);
 app.post('/insertNew', queueHandler.insertNew);
@@ -45,6 +46,9 @@ app.get('/getMessageList', slLoginHandler.slLoginCheck, messageHandler.getMessag
 app.post('/dismissMessage', slLoginHandler.slLoginCheck, messageHandler.dismissMessage);
 app.post('/dismissAllMessages', slLoginHandler.slLoginCheck, messageHandler.dismissAllMessages);
 app.post('/addMessageOutOfNowhere', slLoginHandler.slLoginCheck, messageHandler.addMessageOutOfNowhere);
+
+app.get('/searchSuidHistory', databaseHandler.searchSuidHistory);
+app.get('/searchDescriptionKeyWordsHistory', slLoginHandler.slLoginCheck, databaseHandler.searchDescriptionKeyWordsHistory);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);
