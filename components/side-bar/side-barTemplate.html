@@ -1,32 +1,63 @@
 <script type="text/ng-template" id="messageShowBucketDetail.html">
 	<md-dialog flex="50" aria-label="Bucket Detail">
 		<md-card-content>
-				<div flex layout="row" layout-sm="column" layout-align="start center">
-					<div flex layout="row" layout-align="start center">
-						<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-							<p5 flex>{{bucket.type}}</p5>
-						</div>
+			<div flex layout="row" layout-sm="column" layout-align="start center">
+				<div flex layout="row" layout-align="start center">
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.type}}</p5>
+					</div>
 
-						<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-							<p5 flex>{{bucket.class}}</p5>
-						</div>
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.class}}</p5>
 					</div>
 				</div>
-				
-				<div flex layout="row" layout-sm="column" layout-align="start strech">
-					<div flex layout="column" layout-align="start center"> 
-						<h4 ng-if="bucket.students.length > 1">Students</h4>
-						<h4 ng-if="bucket.students.length == 1">Student</h4>
-						<div ng-repeat="name in bucket.students">
-							<h6>{{name}}</h6>
-						</div>
-					</div>
-					<div flex layout="column" layout-align="start center">
-						<h4>Description</h4>
-						<p>{{bucket.description}}</p>
+			</div>
+			
+			<div flex layout="row" layout-sm="column" layout-align="start strech">
+				<div flex layout="column" layout-align="start center"> 
+					<h4 ng-if="bucket.students.length > 1">Students</h4>
+					<h4 ng-if="bucket.students.length == 1">Student</h4>
+					<div ng-repeat="name in bucket.students">
+						<h6>{{name}}</h6>
 					</div>
 				</div>
-			</md-card-content>
+				<div flex layout="column" layout-align="start center">
+					<h4>Description</h4>
+					<p>{{bucket.description}}</p>
+				</div>
+			</div>
+		</md-card-content>
+	</md-dialog>
+</script>
+
+<script type="text/ng-template" id="searchResultDialog.html">
+	
+	<md-dialog flex="80" aria-label="Bucket Detail">
+		<md-toolbar>
+			<div class="md-toolbar-tools"><h1>Search Results: </h1></div>
+		</md-toolbar>
+		<md-content layout="column" class="search-result-dialog-container">
+			<v-accordion id="search-result-accordion" class="vAccordion--default" multiple control="accordion">
+				<v-pane id="search-result-accordion-suid-pane">
+					<v-pane-header>SUID Search</v-pane-header>
+					<v-pane-content>
+						<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
+						<md-card class="animate-bucket-repeat" ng-repeat="bucket in suidResult">
+							<div ng-include="'bucketList.html'"></div>
+						</md-card>
+					</v-pane-content>
+				</v-pane>
+				<v-pane id="search-result-accordion-keyword-pane">
+					<v-pane-header>Keyword Search</v-pane-header>
+					<v-pane-content>
+						<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
+						<md-card class="animate-bucket-repeat" ng-repeat="bucket in keywordResult">
+							<div ng-include="'bucketList.html'"></div>
+						</md-card>
+					</v-pane-content>
+				</v-pane>
+			</v-accordion>
+		</md-content>
 	</md-dialog>
 </script>
 

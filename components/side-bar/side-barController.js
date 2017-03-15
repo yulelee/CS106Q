@@ -267,12 +267,31 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
 
         $scope.search.submitSearch = function() {
             Promise.all([searchForKeyWordHistory(), searchForSuidHistory()]).then(function() {
-                console.log($scope.search.suidSearchResult);
                 console.log($scope.search.keywordSearchResult);
+                $mdDialog.show({
+                    locals: {
+                        keywordResult: $scope.search.keywordSearchResult,
+                        suidResult: $scope.search.suidSearchResult
+                    },
+                    controller: searchResultDialogController,
+                    templateUrl: 'searchResultDialog.html',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: true
+                });
             }).catch(function() {
                 console.log('Search failed, maybe the search box is empty.');
             }); 
         };
         
+        var searchResultDialogController = function($scope, $mdDialog, keywordResult, suidResult) {
+            $scope.keywordResult = keywordResult;
+            $scope.suidResult = suidResult;
+            console.log($scope.keywordResult);
+            console.log($scope.suidResult);
+            $scope.$on('search-result-accordion:onReady', function () {
+                if ($scope.keywordResult.length > $scope.suidResult.length) $scope.accordion.expand('search-result-accordion-keyword-pane');
+                else if ($scope.keywordResult.length < $scope.suidResult.length) $scope.accordion.expand('search-result-accordion-suid-pane');
+            });
+        };
     }
 ]);
