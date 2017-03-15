@@ -169,7 +169,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         // add a message out of nowhere
         $scope.messageControl.addMessageOutOfNowhere = function() {
             $mdDialog.show({
-                controller: addMessageOutOfNowhereController,
+                controller: 'AddMessageOutOfNowhereController',
                 templateUrl: 'components/side-bar/add-message-out-of-nowhere-dialog.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
@@ -181,19 +181,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             }, function() {
                 console.log("No message being entered...");
             });
-        };
-
-        var addMessageOutOfNowhereController = function($scope, $mdDialog) {
-            $scope.addMessagesDialogModel = {};
-            $scope.addMessagesDialogModel.message = '';
-
-            $scope.addMessagesDialogModel.cancel = function() {
-                $mdDialog.cancel();
-            };
-
-            $scope.addMessagesDialogModel.sendMessage = function(answer) {
-                $mdDialog.hide($scope.addMessagesDialogModel.message);
-            };
         };
 
         $scope.slCurHelpingControl = {};
@@ -229,68 +216,17 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         $scope.$on("getCurInfo", getCurInfo);
         getCurInfo(); // execute once at the beginning
 
-        // search the database
         $scope.search = {};
         $scope.search.keyword = undefined;
-        $scope.search.keywordSearchResult = undefined;
-        $scope.search.suidSearchResult = undefined;
-
-        var searchForKeyWordHistory = function() {
-            return new Promise(function(resolve, reject) {
-                if ($scope.search.keyword.length === 0) { reject(); }
-                var SearchDescriptionKeyWordsHistory = $resource("/searchDescriptionKeyWordsHistory", {}, {get: {method: "get", isArray: true}});
-                SearchDescriptionKeyWordsHistory.get({
-                    keyword: $scope.search.keyword
-                }, function(result) {
-                    $scope.search.keywordSearchResult = result;
-                    resolve();
-                }, function(response) {
-                    reject();
-                });
-            });
-        };
-
-        var searchForSuidHistory = function() {
-            return new Promise(function(resolve, reject) {
-                if ($scope.search.keyword.length === 0) { reject(); }
-                var SearchSuidHistory = $resource("/searchSuidHistory", {}, {get: {method: "get", isArray: true}});
-                SearchSuidHistory.get({
-                    suid: $scope.search.keyword
-                }, function(result) {
-                    $scope.search.suidSearchResult = result;
-                    resolve();
-                }, function(response) {
-                    reject();
-                });
-            });
-        };
 
         $scope.search.submitSearch = function() {
-            Promise.all([searchForKeyWordHistory(), searchForSuidHistory()]).then(function() {
-                console.log($scope.search.keywordSearchResult);
-                $mdDialog.show({
-                    locals: {
-                        keywordResult: $scope.search.keywordSearchResult,
-                        suidResult: $scope.search.suidSearchResult
-                    },
-                    controller: searchResultDialogController,
-                    templateUrl: 'components/side-bar/search-result-dialog.html',
-                    parent: angular.element(document.body),
-                    clickOutsideToClose: true
-                });
-            }).catch(function() {
-                console.log('Search failed, maybe the search box is empty.');
-            }); 
-        };
-        
-        var searchResultDialogController = function($scope, $mdDialog, keywordResult, suidResult) {
-            $scope.keywordResult = keywordResult;
-            $scope.suidResult = suidResult;
-            console.log($scope.keywordResult);
-            console.log($scope.suidResult);
-            $scope.$on('search-result-accordion:onReady', function () {
-                if ($scope.keywordResult.length > $scope.suidResult.length) $scope.accordion.expand('search-result-accordion-keyword-pane');
-                else if ($scope.keywordResult.length < $scope.suidResult.length) $scope.accordion.expand('search-result-accordion-suid-pane');
+            if ($scope.search.keyword.length === 0) return;
+            $mdDialog.show({
+                locals: { keyword: $scope.search.keyword },
+                controller: 'SearchResultDialogController',
+                templateUrl: 'components/side-bar/search-result-dialog.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
             });
         };
     }

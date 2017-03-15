@@ -8,7 +8,7 @@
 				<v-pane-header>SUID Search</v-pane-header>
 				<v-pane-content>
 					<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
-					<md-card class="animate-bucket-repeat" ng-repeat="bucket in suidResult">
+					<md-card class="animate-bucket-repeat" ng-repeat="bucket in suidSearchResult">
 						<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
 					</md-card>
 				</v-pane-content>
@@ -17,7 +17,7 @@
 				<v-pane-header>Keyword Search</v-pane-header>
 				<v-pane-content>
 					<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
-					<md-card class="animate-bucket-repeat" ng-repeat="bucket in keywordResult">
+					<md-card class="animate-bucket-repeat" ng-repeat="bucket in keywordSearchResult">
 						<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
 					</md-card>
 				</v-pane-content>
