@@ -1,0 +1,24 @@
+<md-dialog flex="50" aria-label="Add Message">
+	<form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>Add Message</h2>
+				<span flex></span>
+				<md-button class="md-icon-button" ng-click="addMessagesDialogModel.cancel()">
+					<i class="material-icons">close</i>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-dialog-content class="solve-add-message-dialog-content">
+			<md-input-container flex layout="column" layout-align="center stretch">
+				<label>Message</label>
+				<textarea placeholder="Please enter your message here." ng-required="false" 
+					class="solve-add-message-dialog-textarea"
+					ng-model="addMessagesDialogModel.message" rows="1" md-select-on-focus></textarea>
+			</md-input-container>
+			<div flex layout="row">
+				<md-button flex="grow" ng-click="addMessagesDialogModel.sendMessage()" class="md-whiteframe-z1">Post</md-button>
+			</div>
+		</md-dialog-content>
+	</form>
+</md-dialog>

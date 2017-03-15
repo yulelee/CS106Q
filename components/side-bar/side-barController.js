@@ -143,7 +143,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         $scope.messageControl.showBucket = function(bucket) {
             $mdDialog.show({
                 controller: messageShowBucketDetailController,
-                templateUrl: 'messageShowBucketDetail.html',
+                templateUrl: 'components/side-bar/side-bar-message-show-bucket-detail.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true,
                 locals: {bucket: bucket}
@@ -170,7 +170,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         $scope.messageControl.addMessageOutOfNowhere = function() {
             $mdDialog.show({
                 controller: addMessageOutOfNowhereController,
-                templateUrl: 'addMessageOutOfNowhere.html',
+                templateUrl: 'components/side-bar/add-message-out-of-nowhere-dialog.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
             }).then(function(message) {
@@ -201,7 +201,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             $mdDialog.show({
                 locals: {position: position},
                 controller: lookAtMapDialogController,
-                templateUrl: 'lookAtMapDialog.html',
+                templateUrl: 'components/side-bar/look-at-map-dialog.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
             });
@@ -274,7 +274,7 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                         suidResult: $scope.search.suidSearchResult
                     },
                     controller: searchResultDialogController,
-                    templateUrl: 'searchResultDialog.html',
+                    templateUrl: 'components/side-bar/search-result-dialog.html',
                     parent: angular.element(document.body),
                     clickOutsideToClose: true
                 });

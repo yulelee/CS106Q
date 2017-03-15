@@ -106,7 +106,7 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
         $scope.mainPageModel.showAddMessagesDialog = function(ev) {
             $mdDialog.show({
                 controller: addMessagesDialogController,
-                templateUrl: 'addMessageWhenSolve.html',
+                templateUrl: 'components/main-page/main-page-add-message-when-solve.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: false
             }).then(function(message) {
