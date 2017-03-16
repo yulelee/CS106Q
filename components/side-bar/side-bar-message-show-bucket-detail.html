@@ -1,29 +1,5 @@
 <md-dialog flex="50" aria-label="Bucket Detail">
 	<md-card-content>
-		<div flex layout="row" layout-sm="column" layout-align="start center">
-			<div flex layout="row" layout-align="start center">
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.type}}</p5>
-				</div>
-
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.class}}</p5>
-				</div>
-			</div>
-		</div>
-		
-		<div flex layout="row" layout-sm="column" layout-align="start strech">
-			<div flex layout="column" layout-align="start center"> 
-				<h4 ng-if="bucket.students.length > 1">Students</h4>
-				<h4 ng-if="bucket.students.length == 1">Student</h4>
-				<div ng-repeat="name in bucket.students">
-					<h6>{{name}}</h6>
-				</div>
-			</div>
-			<div flex layout="column" layout-align="start center">
-				<h4>Description</h4>
-				<p>{{bucket.description}}</p>
-			</div>
-		</div>
+		<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
 	</md-card-content>
 </md-dialog>
