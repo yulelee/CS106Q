@@ -21,17 +21,14 @@ queueHandler.getCurInfo = function(req, res) {
 			SL.count({logged_in_sessionId: {$ne : undefined}}, function(err, loggedInSlCount) {
 				if (err) { res.status(400).end('Error counting sls'); }
 				else {
-					if (loggedInSlCount === 0) {
-						info.waitingTime = 9999; // special value, maybe we should change this...
+					info.waitingTime = waitingBucketCount * averageHelpingTime / Math.max(1, loggedInSlCount); // time for the buckets still waiting 
+					Bucket.find({helperSL: {$ne : undefined}, solved: false}).sort({helpStartTime: -1}).limit(1).exec(function(err, newestStartedHelpedBucket) {
+						var needTime = newestStartedHelpedBucket.length === 0 
+							? 0 : (averageHelpingTime - ((new Date()) - newestStartedHelpedBucket[0].helpStartTime) / 1000 / 60); // time needed to end this one
+						needTime = Math.max(0, needTime);
+						info.waitingTime += needTime;
 						res.status(200).end(JSON.stringify(info));
-					}
-					else {
-						Bucket.find({helperSL: {$ne : undefined}, solved: false}).sort({helpStartTime: -1}).limit(1).exec(function(err, newestStartedHelpedBucket) {
-							var needTime = newestStartedHelpedBucket.length === 0 ? 0 : (averageHelpingTime - ((new Date()) - newestStartedHelpedBucket[0].helpStartTime) / 1000 / 60); // time needed to end this one
-							info.waitingTime = needTime + waitingBucketCount * averageHelpingTime / loggedInSlCount;
-							res.status(200).end(JSON.stringify(info));
-						});
-					}
+					});
 				}
 			});
 		}
