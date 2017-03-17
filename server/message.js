@@ -6,6 +6,7 @@ var Bucket = require('../schema/bucket.js');
 var clientList = require('./clientList.js');
 var SL = require('../schema/sl.js');
 var Message = require('../schema/message.js');
+var DatetimeUtils = require('./datetimeUtils.js');
 
 var messageHandler = {};
 
@@ -31,7 +32,7 @@ messageHandler.attachBucket = function(messages, callback) {
 				if (err) { callback('Error finding bucket.'); }
 				else {
 					message.associatedBucket = JSON.parse(JSON.stringify(bucket));
-					finishOneMessage();
+					DatetimeUtils.parseSingleDate(message.associatedBucket, finishOneMessage);
 				}
 			});
 		} else { finishOneMessage(); }
@@ -58,15 +59,16 @@ messageHandler.getMessageList = function(req, res) {
 				if (err) { res.status(400).send('Error find messages, final.'); }
 				else {
 					messageHandler.attachSL(unreadMessages, function(err) {
-						if (err) {res.status(200).send(err);}
+						if (err) {res.status(400).send(err);}
 						else {
 							messageHandler.attachBucket(unreadMessages, function(err) {
-								if (err) {res.status(200).send(err);}
+								if (err) {res.status(400).send(err);}
 								else {
-									unreadMessages.sort(function(a, b) {
-										return new Date(b.date_time) - new Date(a.date_time);
+									unreadMessages.sort(function(a, b) { return new Date(b.date_time) - new Date(a.date_time); });
+									DatetimeUtils.parseDate(unreadMessages, function(err) {
+										if (err) {res.status(400).send(err);}
+										else { res.status(200).send(JSON.stringify(unreadMessages)); }
 									});
-									res.status(200).send(JSON.stringify(unreadMessages));
 								}
 							});
 						}

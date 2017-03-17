@@ -6,6 +6,7 @@ var Bucket = require('../schema/bucket.js');
 var clientList = require('./clientList.js');
 var SL = require('../schema/sl.js');
 var Message = require('../schema/message.js');
+var DatetimeUtils = require('./datetimeUtils.js');
 
 var queueHandler = {};
 
@@ -82,6 +83,21 @@ queueHandler.putNew = function(req, res) {
 	});
 };
 
+queueHandler.attachSL = function(buckets, callback) {
+	async.each(buckets, function(bucket, finishOneMessage) {
+		SL.findOne({_id: bucket.helperSL}, function(err, sl) {
+			if (err) { callback('Error finding sl.'); }
+			else {
+				bucket.slPoster = JSON.parse(JSON.stringify(sl));
+				finishOneMessage();
+			}
+		});
+	}, function(err) {
+		if (err) { callback('Error attaching sl, final.'); }
+		else { callback(); }
+	});
+};
+
 queueHandler.getCurrentList = function(req, res) {
 	var categorizedList = {};
 	categorizedList.waiting = [];
@@ -98,33 +114,26 @@ queueHandler.getCurrentList = function(req, res) {
 				if (err) {res.status(400).send('Error retrieving buckets.');}
 				else {
 					tempBucketList = tempBucketList.concat(JSON.parse(JSON.stringify(unsolvedBuckets))); // have everything in one list
-					async.each(tempBucketList, function(bucket, finishOneBucket) {
-					    bucket.date_time = new Date(bucket.date_time).toLocaleTimeString('en-US', {hour12: true, hour: "2-digit", minute: "2-digit"});
-					    if (bucket.helperSL) {
-					    	SL.findOne({_id: bucket.helperSL}, "", function(err, sl) { // if there is a helper, replace the _id with the actual object
-					    		if (err) { res.status(400).send('Error retrieving sl.'); }
-					    		else {
-					    			bucket.helperSL = JSON.parse(JSON.stringify(sl));
-					    			finishOneBucket();
-					    		}
-					    	});
-					    }
-					    else { finishOneBucket(); }
-					}, function(err) {
-					    if (err) {response.status(400).end('Error processing buckets, final');}
-					    else {
-					    	// now every the helper has been added, we can categorize them
-					    	// into three categories, waiting, helping, and solved
-					    	async.each(tempBucketList, function(bucket, finishOneBucket) {
-					    		if (!bucket.helperSL) categorizedList.waiting.push(bucket);
-					    		else if (!bucket.solved) categorizedList.helping.push(bucket);
-					    		else categorizedList.solved.push(bucket);
-					    		finishOneBucket();
-					    	}, function(err) {
-					    		if (err) {response.status(400).end('Error categorizing buckets, final');}
-					    		else { res.end(JSON.stringify(categorizedList)); }
-					    	});
-					    }
+					DatetimeUtils.parseTime(tempBucketList, function(err) {
+						if (err) { res.status(400).send(err); }
+						else {
+							queueHandler.attachSL(tempBucketList, function(err) {
+								if (err) { res.status(400).send(err); }
+								else {
+									// now every the helper has been added, we can categorize them
+									// into three categories, waiting, helping, and solved
+									async.each(tempBucketList, function(bucket, finishOneBucket) {
+										if (!bucket.helperSL) categorizedList.waiting.push(bucket);
+										else if (!bucket.solved) categorizedList.helping.push(bucket);
+										else categorizedList.solved.push(bucket);
+										finishOneBucket();
+									}, function(err) {
+										if (err) {response.status(400).end('Error categorizing buckets, final');}
+										else { res.end(JSON.stringify(categorizedList)); }
+									});
+								}
+							});
+						}
 					});
 				}
 			});
