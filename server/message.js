@@ -12,7 +12,7 @@ var messageHandler = {};
 
 messageHandler.attachSL = function(messages, callback) {
 	async.each(messages, function(message, finishOneMessage) {
-		SL.findOne({_id: message.slPoster}, function(err, sl) {
+		SL.findOne({_id: message.slPoster}, "-logged_in_sessionId -unreadMessages", function(err, sl) {
 			if (err) { callback('Error finding sl.'); }
 			else {
 				message.slPoster = JSON.parse(JSON.stringify(sl));
@@ -42,6 +42,18 @@ messageHandler.attachBucket = function(messages, callback) {
 	});
 };
 
+messageHandler.attachSLandBucket = function(messages, callback) {
+	messageHandler.attachSL(messages, function(err) {
+		if (err) { callback(err); }
+		else {
+			messageHandler.attachBucket(messages, function(err) {
+				if (err) {callback(err);}
+				else { callback(); }
+			});
+		}
+	});
+};
+
 messageHandler.getMessageList = function(req, res) {
 	SL.findOne({_id: req.session.sl_id}, function(err, sl) {
 		if (err) { res.status(400).send('Error finding the sl.'); }
@@ -58,18 +70,13 @@ messageHandler.getMessageList = function(req, res) {
 			}, function(err) {
 				if (err) { res.status(400).send('Error find messages, final.'); }
 				else {
-					messageHandler.attachSL(unreadMessages, function(err) {
-						if (err) {res.status(400).send(err);}
+					messageHandler.attachSLandBucket(unreadMessages, function(err) {
+						if (err) { res.status(400).send(err); }
 						else {
-							messageHandler.attachBucket(unreadMessages, function(err) {
+							unreadMessages.sort(function(a, b) { return new Date(b.date_time) - new Date(a.date_time); });
+							DatetimeUtils.parseDate(unreadMessages, function(err) {
 								if (err) {res.status(400).send(err);}
-								else {
-									unreadMessages.sort(function(a, b) { return new Date(b.date_time) - new Date(a.date_time); });
-									DatetimeUtils.parseDate(unreadMessages, function(err) {
-										if (err) {res.status(400).send(err);}
-										else { res.status(200).send(JSON.stringify(unreadMessages)); }
-									});
-								}
+								else { res.status(200).send(JSON.stringify(unreadMessages)); }
 							});
 						}
 					});

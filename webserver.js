@@ -49,6 +49,7 @@ app.post('/addMessageOutOfNowhere', slLoginHandler.slLoginCheck, messageHandler.
 
 app.get('/searchSuidHistory', databaseHandler.searchSuidHistory);
 app.get('/searchDescriptionKeyWordsHistory', slLoginHandler.slLoginCheck, databaseHandler.searchDescriptionKeyWordsHistory);
+app.get('/searchMessageKeyWordsHistory', slLoginHandler.slLoginCheck, databaseHandler.searchMessageKeyWordsHistory);
 
 var clientList = require('./server/clientList.js');
 app.get('/registerClient', clientList.registerClient);

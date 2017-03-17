@@ -7,6 +7,7 @@ var clientList = require('./clientList.js');
 var SL = require('../schema/sl.js');
 var Message = require('../schema/message.js');
 var DatetimeUtils = require('./datetimeUtils.js');
+var MessageHandler = require('./message.js');
 
 var dataBaseHandler = {};
 
@@ -41,9 +42,14 @@ dataBaseHandler.searchMessageKeyWordsHistory = function(req, res) {
 		if (err) { res.status(400).send('Error finding messages.'); }
 		else {
 			var messages = JSON.parse(JSON.stringify(messages));
-			DatetimeUtils.parseDate(messages, function(err) {
+			MessageHandler.attachSLandBucket(messages, function(err) {
 				if (err) { res.status(200).send(err); }
-				else { res.status(200).send(JSON.stringify(messages)); }
+				else {
+					DatetimeUtils.parseDate(messages, function(err) {
+						if (err) { res.status(200).send(err); }
+						else { res.status(200).send(JSON.stringify(messages)); }
+					});
+				}
 			});
 		}
 	});
