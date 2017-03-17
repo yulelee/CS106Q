@@ -2,19 +2,19 @@
 	<md-tabs flex md-border-bottom md-stretch-tabs="always">
 		<md-tab layout="column" layout-align="center" label="Students" ng-disabled="main.curSL !== undefined">
 			<div flex layout="column" layout-align="center center" ><h4 class="cs106q-side-bar-title">Register</h4></div>
-			<form flex layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="newBucket.doRegister()">
-				<md-input-container class="md-block cs106q-side-bar-input-container">
+			<form flex layout="column" layout-align="center stretch" name="form.studentRegister" id="student-register" angular-validator ng-submit="form.studentRegister.$valid && newBucket.doRegister()">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 					<label>Class</label>
-					<md-select required ng-model="newBucket.class">
+					<md-select ng-required="true" ng-model="newBucket.class">
 						<md-option ng-repeat="class in classes" value="{{class}}">
 							{{class}}
 						</md-option>
 					</md-select>
 				</md-input-container>
 
-				<md-input-container class="md-block cs106q-side-bar-input-container">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 					<label>Question Type</label>
-					<md-select required ng-model="newBucket.type">
+					<md-select ng-required="true" ng-model="newBucket.type">
 						<md-option ng-repeat="type in types" value="{{type}}">
 							{{type}}
 						</md-option>
@@ -33,24 +33,24 @@
 					</md-select>
 				</md-input-container>
 
-				<md-input-container class="md-block cs106q-side-bar-input-container">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 					<label>SUID</label>
 					<input ng-model="newBucket.suid" ng-required="true">
 				</md-input-container>
-				<md-input-container class="md-block cs106q-side-bar-input-container">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 					<label>First name</label>
 					<input ng-model="newBucket.firstName" ng-required="true">
 				</md-input-container>
 
-				<md-input-container class="md-block cs106q-side-bar-input-container">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 					<label>Last Name</label>
 					<input ng-model="newBucket.lastName" ng-required="true">
 				</md-input-container>
-				<md-input-container class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'">
 					<label>Position</label>
 					<input ng-model="newBucket.position" ng-required="true">
 				</md-input-container>
-				<md-input-container class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'" ng-required="true">
+				<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container" ng-if="newBucket.existingPick === null || newBucket.type === 'Debugging'" ng-required="true">
 					<label>Problem Description</label>
 					<textarea ng-required="true" ng-model="newBucket.description" rows="1" md-select-on-focus></textarea>
 				</md-input-container>
@@ -68,8 +68,8 @@
 				<div flex layout="column" layout-align="center center">
 					<h4 flex class="cs106q-side-bar-title">SL Login</h4>
 				</div>
-				<form layout="column" layout-align="center stretch" name="form.slLogin" id="sl-login" angular-validator ng-submit="slLogin.login()">
-					<md-input-container class="md-block cs106q-side-bar-input-container">
+				<form layout="column" layout-align="center stretch" name="form.slLogin" id="sl-login" angular-validator ng-submit="form.slLogin.$valid && slLogin.login()">
+					<md-input-container ng-required="true" class="md-block cs106q-side-bar-input-container">
 						<label>SUID</label>
 						<input ng-model="slLogin.suid" ng-required="true">
 					</md-input-container>
