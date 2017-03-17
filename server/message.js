@@ -9,6 +9,38 @@ var Message = require('../schema/message.js');
 
 var messageHandler = {};
 
+messageHandler.attachSL = function(messages, callback) {
+	async.each(messages, function(message, finishOneMessage) {
+		SL.findOne({_id: message.slPoster}, function(err, sl) {
+			if (err) { callback('Error finding sl.'); }
+			else {
+				message.slPoster = JSON.parse(JSON.stringify(sl));
+				finishOneMessage();
+			}
+		});
+	}, function(err) {
+		if (err) { callback('Error attaching sl, final.'); }
+		else { callback(); }
+	});
+};
+
+messageHandler.attachBucket = function(messages, callback) {
+	async.each(messages, function(message, finishOneMessage) {
+		if (message.associatedBucket) {
+			Bucket.findOne({_id: message.associatedBucket}, function(err, bucket) {
+				if (err) { callback('Error finding bucket.'); }
+				else {
+					message.associatedBucket = JSON.parse(JSON.stringify(bucket));
+					finishOneMessage();
+				}
+			});
+		} else { finishOneMessage(); }
+	}, function(err) {
+		if (err) { callback('Error attaching bucket, final.'); }
+		else { callback(); }
+	});
+};
+
 messageHandler.getMessageList = function(req, res) {
 	SL.findOne({_id: req.session.sl_id}, function(err, sl) {
 		if (err) { res.status(400).send('Error finding the sl.'); }
@@ -18,36 +50,27 @@ messageHandler.getMessageList = function(req, res) {
 				Message.findOne({_id: message}, function(err, message) {
 					if (err) { res.status(400).send('Error finding the message from id.'); }
 					else {
-						message = (JSON.parse(JSON.stringify(message)));
-						SL.findOne({_id: message.slPoster}, function(err, sl) {
-							if (err) { res.status(400).send('Error finding sl.'); }
-							else {
-								message.slPoster = JSON.parse(JSON.stringify(sl));
-								if (message.associatedBucket) {
-									Bucket.findOne({_id: message.associatedBucket}, function(err, bucket) {
-										if (err) { res.status(400).send('Error finding bucket.'); }
-										else {
-											message.associatedBucket = JSON.parse(JSON.stringify(bucket));
-											unreadMessages.push(message);
-											finishOneMessage();
-										}
-									});
-								}
-								else {
-									unreadMessages.push(message);
-									finishOneMessage();
-								}
-							}
-						});
+						unreadMessages.push(JSON.parse(JSON.stringify(message)));
+						finishOneMessage();
 					}
 				});
 			}, function(err) {
 				if (err) { res.status(400).send('Error find messages, final.'); }
 				else {
-					unreadMessages.sort(function(a, b) {
-						return new Date(b.date_time) - new Date(a.date_time);
+					messageHandler.attachSL(unreadMessages, function(err) {
+						if (err) {res.status(200).send(err);}
+						else {
+							messageHandler.attachBucket(unreadMessages, function(err) {
+								if (err) {res.status(200).send(err);}
+								else {
+									unreadMessages.sort(function(a, b) {
+										return new Date(b.date_time) - new Date(a.date_time);
+									});
+									res.status(200).send(JSON.stringify(unreadMessages));
+								}
+							});
+						}
 					});
-					res.status(200).send(JSON.stringify(unreadMessages));
 				}
 			});
 		}
