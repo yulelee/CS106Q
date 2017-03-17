@@ -1,0 +1,9 @@
+<div class="md-list-item-text" layout="column" layout-align="center stretch">
+	<div layout="row" layout-align="center center"> 
+		<h6 >Posted by: {{message.slPoster.name}}</h6>
+		<span flex></span>
+		<h6 ng-if="message.associatedBucket" ng-click="messageControl.showBucket(message.associatedBucket)" class="side-bar-message-box-small-button">See Question</h6>
+		<h6 ng-click="messageControl.dismissMessage(message._id)" class="side-bar-message-box-small-button">Dismiss</h6>
+	</div>
+	<p class="side-bar-message-body">{{message.content}}</p>
+</div>
