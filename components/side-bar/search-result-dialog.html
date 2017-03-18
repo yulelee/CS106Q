@@ -39,13 +39,10 @@
 								class="search-result-dialog-message-small-button side-bar-message-box-small-button">
 								(Close Question)</h6>
 						</div>
-						<div layout="row" layout-align="start center" class="search-result-dialog-message-content">
+						<div layout="column" layout-align="start start" class="search-result-dialog-message-content">
 							<p class="side-bar-message-body" ng-if="!message.showBucket">{{message.content}}</p>
-							<div layout="row" layout-align="start center" ng-if="message.showBucket"
-								class="search-result-dialog-message-bucket-content">
-								<p class="side-bar-message-body">Question by 
-								{{message.associatedBucket.students[0]}} : {{message.associatedBucket.description}}</p>
-							</div>
+							<p class="side-bar-message-body" ng-if="message.showBucket">Question by {{message.associatedBucket.students[0]}}: </p>
+							<p class="side-bar-message-body" ng-if="message.showBucket">{{message.associatedBucket.description}}</p>
 						</div>
 					</div>
 				</v-pane-content>
