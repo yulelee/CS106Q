@@ -51,10 +51,15 @@ cs106q.controller('SearchResultDialogController', ['$scope', '$mdDialog', '$reso
             });
         };
 
+        $scope.tab = null;
+
         Promise.all([searchForKeyWordHistory(), searchForSuidHistory(), searchForMessageHistory()]).then(function() {
-            if ($scope.keywordSearchResult.length > $scope.suidSearchResult.length) $scope.accordion.expand('search-result-accordion-keyword-pane');
-            else if ($scope.keywordSearchResult.length < $scope.suidSearchResult.length) $scope.accordion.expand('search-result-accordion-suid-pane');
-            if ($scope.messageSearchResult.length > 0) $scope.accordion.expand('search-result-accordion-message-pane');
+            $scope.$apply(function() {
+                var lengths = [$scope.suidSearchResult.length, 
+                    $scope.keywordSearchResult.length,
+                    $scope.messageSearchResult.length];
+                $scope.tab = lengths.indexOf(Math.max(...lengths));
+            });
         }).catch(function() {
             console.log('Search failed, maybe the search box is empty.');
         });

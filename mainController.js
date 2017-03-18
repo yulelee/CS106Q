@@ -1,6 +1,6 @@
 'use strict';
 
-var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngMessages', 'ngCookies', 'ngAnimate', 'vAccordion']);
+var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngMessages', 'ngCookies', 'ngAnimate']);
 
 cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$http', '$cookies', '$timeout', '$window',
 	function($scope, $routeParams, $location, $resource, $rootScope, $http, $cookies, $timeout, $window) {

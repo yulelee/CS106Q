@@ -47,7 +47,7 @@
 }
 
 .search-result-dialog-container {
-	padding: 30px;
+	height: 90vh;
 }
 
 .search-result-dialog-message-small-button {
@@ -59,6 +59,11 @@
 }
 
 .search-result-dialog-message-containter {
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.search-result-dialog-nothing {
+	margin-top: 20px;
+	text-align: center;
 }
