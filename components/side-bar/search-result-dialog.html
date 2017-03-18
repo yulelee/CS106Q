@@ -1,4 +1,4 @@
-<md-dialog flex="80" aria-label="Bucket Detail">
+<md-dialog flex="80">
 	<md-toolbar>
 		<div class="md-toolbar-tools"><h1>Search Results: </h1></div>
 	</md-toolbar>
@@ -7,7 +7,7 @@
 			<v-pane id="search-result-accordion-suid-pane">
 				<v-pane-header>SUID Search</v-pane-header>
 				<v-pane-content>
-					<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
+					<div class="animate-bucket-repeat" ng-if="suidSearchResult.length === 0">Nothing there :)</div>
 					<md-card class="animate-bucket-repeat" ng-repeat="bucket in suidSearchResult">
 						<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
 					</md-card>
@@ -16,10 +16,38 @@
 			<v-pane id="search-result-accordion-keyword-pane">
 				<v-pane-header>Keyword Search</v-pane-header>
 				<v-pane-content>
-					<md-card class="animate-bucket-repeat" ng-if="bucket.length === 0">Nothing there :)</md-card>
+					<div class="animate-bucket-repeat" ng-if="keywordSearchResult.length === 0">Nothing there :)</div>
 					<md-card class="animate-bucket-repeat" ng-repeat="bucket in keywordSearchResult">
 						<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
 					</md-card>
+				</v-pane-content>
+			</v-pane>
+			<v-pane id="search-result-accordion-message-pane">
+				<v-pane-header>Message Search</v-pane-header>
+				<v-pane-content>
+					<div ng-if="messageSearchResult.length === 0">Nothing there :)</div>						
+					<div class="md-list-item-text search-result-dialog-message-containter" 
+						layout="column" layout-align="center stretch" ng-repeat="message in messageSearchResult">
+						<div layout="row" layout-align="start center">
+							<h6>Posted by: {{message.slPoster.name}}</h6>
+							<h6 ng-if="message.associatedBucket && !message.showBucket" 
+								ng-click="message.showBucket = true;" 
+								class="search-result-dialog-message-small-button side-bar-message-box-small-button">
+								(See Question)</h6>
+							<h6 ng-if="message.associatedBucket && message.showBucket" 
+								ng-click="message.showBucket = false;" 
+								class="search-result-dialog-message-small-button side-bar-message-box-small-button">
+								(Close Question)</h6>
+						</div>
+						<div layout="row" layout-align="start center" class="search-result-dialog-message-content">
+							<p class="side-bar-message-body" ng-if="!message.showBucket">{{message.content}}</p>
+							<div layout="row" layout-align="start center" ng-if="message.showBucket"
+								class="search-result-dialog-message-bucket-content">
+								<p class="side-bar-message-body">Question by 
+								{{message.associatedBucket.students[0]}} : {{message.associatedBucket.description}}</p>
+							</div>
+						</div>
+					</div>
 				</v-pane-content>
 			</v-pane>
 		</v-accordion>

@@ -29,7 +29,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
                     studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
                     _id: $scope.newBucket.existingPick._id
                 }, function(user) {
-                    console.log(user);
                     $scope.form.studentRegister.$setPristine();
                     $scope.form.studentRegister.$setUntouched();
                     clearRegisterForm();
@@ -48,7 +47,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         	    	type: $scope.newBucket.type,
                     position: $scope.newBucket.position
         	    }, function(user) {
-        	        console.log(user);
         	        $scope.form.studentRegister.$setPristine();
         	        $scope.form.studentRegister.$setUntouched();
         	        clearRegisterForm();
@@ -60,7 +58,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
     	};
 
         $scope.filterConceptualBuckets = function(bucket) {
-            console.log(bucket);
             if (bucket.type === 'Conceptual') {
                 if ($scope.newBucket.class === undefined) {return true;}
                 else {return $scope.newBucket.class === bucket.class;}
@@ -91,7 +88,6 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             var slLogout = $resource("/slLogout", {}, {slLogout: {method: "post", isArray: false}});
             slLogout.slLogout({
             }, function(user) {
-                console.log(user);
                 $scope.main.curSL = undefined;
                 $cookies.remove("logged_sl__id");
                 $cookies.remove("logged_sl_name");

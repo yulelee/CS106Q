@@ -63,7 +63,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
 
         $scope.mainPageModel.pickBucket = function(bucket_id) {
             var PickBucket = $resource("/pickBucket", {}, {post: {method: "post", isArray: false}});
-            console.log(bucket_id);
             PickBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
@@ -75,7 +74,6 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
 
         $scope.mainPageModel.putBackBucket = function(bucket_id) {
             var PutBackBucket = $resource("/putBackBucket", {}, {post: {method: "post", isArray: false}});
-            console.log(bucket_id);
             PutBackBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {

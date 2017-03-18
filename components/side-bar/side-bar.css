@@ -48,3 +48,16 @@
 .search-result-dialog-container {
 	padding: 30px;
 }
+
+.search-result-dialog-message-small-button {
+	margin-left: 10px;
+}
+
+.search-result-dialog-message-content {
+	margin-left: 10px;
+}
+
+.search-result-dialog-message-containter {
+	margin-left: 10px;
+	margin-right: 10px;
+}
