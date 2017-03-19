@@ -138,16 +138,11 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
         // show the bucket detail from the message bar
         $scope.messageControl.showBucket = function(bucket) {
             $mdDialog.show({
-                controller: messageShowBucketDetailController,
-                templateUrl: 'components/side-bar/side-bar-message-show-bucket-detail.html',
-                parent: angular.element(document.body),
+                template: '<div bucket-card bucket="bucket" show-location="false"></div>',
                 clickOutsideToClose: true,
-                locals: {bucket: bucket}
+                locals: {bucket: bucket},
+                controller: function($scope, bucket) { $scope.bucket = bucket; }
             });
-        };
-
-        var messageShowBucketDetailController = function($scope, $mdDialog, bucket) {
-            $scope.bucket = bucket;
         };
 
         $scope.messageControl.dismissMessage = function(message_id) {

@@ -84,14 +84,17 @@ queueHandler.putNew = function(req, res) {
 };
 
 queueHandler.attachSL = function(buckets, callback) {
-	async.each(buckets, function(bucket, finishOneMessage) {
-		SL.findOne({_id: bucket.helperSL}, function(err, sl) {
-			if (err) { callback('Error finding sl.'); }
-			else {
-				bucket.slPoster = JSON.parse(JSON.stringify(sl));
-				finishOneMessage();
-			}
-		});
+	async.each(buckets, function(bucket, finishOneBucket) {
+		if (bucket.helperSL) {
+			SL.findOne({_id: bucket.helperSL}, function(err, sl) {
+				if (err) { callback('Error finding sl.'); }
+				else {
+					bucket.helperSL = JSON.parse(JSON.stringify(sl));
+					finishOneBucket();
+				}
+			});
+		}
+		else { finishOneBucket(); }
 	}, function(err) {
 		if (err) { callback('Error attaching sl, final.'); }
 		else { callback(); }

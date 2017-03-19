@@ -4,19 +4,19 @@
 			<md-tab flex layout="column" layout-align="center center" label="SUID Search">
 				<div ng-if="suidSearchResult.length === 0" class="search-result-dialog-nothing">Nothing there :)</div>
 				<md-card class="animate-bucket-repeat" ng-repeat="bucket in suidSearchResult">
-					<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
+					<div bucket-card bucket="bucket" show-location="false" show-control="false"></div>
 				</md-card>
 			</md-tab>
 
 			<md-tab flex layout="column" layout-align="center center" label="Keyword Search">
-				<div ng-if="keywordSearchResult.length === 0">Nothing there :)</div>
+				<div ng-if="keywordSearchResult.length === 0" class="search-result-dialog-nothing">Nothing there :)</div>
 				<md-card class="animate-bucket-repeat" ng-repeat="bucket in keywordSearchResult">
-					<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
+					<div bucket-card bucket="bucket" show-location="false" show-control="false"></div>
 				</md-card>
 			</md-tab>
 
 			<md-tab flex layout="column" layout-align="center center" label="Message Search">
-				<div ng-if="messageSearchResult.length === 0">Nothing there :)</div>				
+				<div ng-if="messageSearchResult.length === 0" class="search-result-dialog-nothing">Nothing there :)</div>				
 				<div class="md-list-item-text search-result-dialog-message-containter" 
 					layout="column" layout-align="center stretch" ng-repeat="message in messageSearchResult">
 					<div layout="row" layout-align="start center">

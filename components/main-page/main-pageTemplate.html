@@ -2,22 +2,23 @@
 	<md-tabs flex md-border-bottom md-stretch-tabs="always">
 		<md-tab flex layout="column" layout-align="center center" label="Waiting">
 			<md-card class="animate-bucket-repeat" layout="column" layout-align="center strech" ng-repeat="bucket in main.buckets.waiting">
-				<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
+				<div bucket-card bucket="bucket" show-location="true" look-at-map-function="main.lookAtMap"
+					show-control="main.curSL" pick-bucket-function="mainPageModel.pickBucket" cur-sl="main.curSL"></div>
 			</md-card>
 		</md-tab>
 
-		<md-tab flex ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Helping">
+		<md-tab flex ng-if="main.curSL" layout="column" layout-align="center center" label="Helping">
 			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.helping">
-				<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
+				<div bucket-card bucket="bucket" show-location="true" look-at-map-function="main.lookAtMap"
+					show-control="true" pick-bucket-function="mainPageModel.pickBucket" cur-sl="main.curSL"></div>
 			</md-card>
 		</md-tab>
 
-		<md-tab flex ng-if="main.curSL !== undefined" layout="column" layout-align="center center" label="Solved">
+		<md-tab flex ng-if="main.curSL" layout="column" layout-align="center center" label="Solved">
 			<md-card class="animate-bucket-repeat" ng-repeat="bucket in main.buckets.solved">
-				<div ng-include="'components/main-page/main-page-bucket-list.html'"></div>
+				<div bucket-card bucket="bucket" show-location="false" look-at-map-function="main.lookAtMap"
+					show-control="true" pick-bucket-function="mainPageModel.pickBucket" cur-sl="main.curSL"></div>
 			</md-card>
 		</md-tab>
 	</md-tabs>
 </md-content>
-
-

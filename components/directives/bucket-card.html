@@ -15,9 +15,8 @@
 			</div>
 
 			<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
-
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex ng-click="main.lookAtMap(bucket.position)" 
+				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class" ng-if="showLocation"> 
+					<p5 flex ng-click="lookAtMapFunction()(bucket.position)" 
 						class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
 				</div>
 
@@ -27,12 +26,12 @@
 			</div>
 		</div>
 
-		<div flex="nogrow" layout="row" layout-align="center center" ng-if="main.curSL">
-			<md-button class="main-page-button" ng-click="mainPageModel.pickBucket(bucket._id)" 
-				ng-if="!bucket.solved && main.curSL.suid !== undefined && bucket.helperSL === undefined && main.curSL.currently_helping === undefined">
+		<div flex="nogrow" layout="row" layout-align="center center" ng-if="showControl">
+			<md-button class="main-page-button" ng-click="pickBucketFunction()(bucket._id)" 
+				ng-if="!bucket.solved && curSl.suid && !bucket.helperSL && !curSl.currently_helping">
 				Pick</md-button>
 			<div flex="none" layout="row" layout-align="center center"
-				ng-if="!bucket.solved && bucket.helperSL !== undefined"> 
+				ng-if="!bucket.solved && bucket.helperSL"> 
 				<p5 flex>{{bucket.helperSL.name}} is helping.</p5>
 			</div>
 			<div flex="none" layout="row" layout-align="center center"
