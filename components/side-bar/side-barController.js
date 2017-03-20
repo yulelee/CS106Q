@@ -1,7 +1,7 @@
 'use strict';
 
-cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$element', '$mdDialog',
-    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $element, $mdDialog) {
+cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$element', '$mdDialog', 'curSL',
+    function($scope, $resource, $rootScope, $element, $mdDialog, curSL) {
     	$scope.form = {};
     	$scope.classes = ['CS106A', 'CS106B', 'CS106X'];
     	$scope.types = ['Debugging', 'Conceptual'];
@@ -66,39 +66,8 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
 
         $scope.slLogin = {};
         $scope.slLogin.suid = undefined;
-        $scope.slLogin.login = function() {
-            var slLogin = $resource("/slLogin", {}, {slLogin: {method: "post", isArray: false}});
-            slLogin.slLogin({
-                suid: $scope.slLogin.suid
-            }, function(sl) {
-                $scope.main.curSL = sl;
-                
-                // store the login information in cookie
-                var expDate = new Date();
-                expDate.setMonth(expDate.getYear() + 1);
-                $cookies.put("logged_sl__id", sl._id, {expires: expDate});
-                $cookies.put("logged_sl_name", sl.name, {expires: expDate});
-                $scope.main.refreshEverything();
-            }, function(response) {
-                console.log(response);
-            });
-        };
-
-        $scope.slLogin.logout = function() {
-            var slLogout = $resource("/slLogout", {}, {slLogout: {method: "post", isArray: false}});
-            slLogout.slLogout({
-            }, function(user) {
-                $scope.main.curSL = undefined;
-                $cookies.remove("logged_sl__id");
-                $cookies.remove("logged_sl_name");
-                $scope.slData.curSLs = undefined;
-            }, function(res) {
-                $scope.main.curSL = undefined;
-                $cookies.remove("logged_sl__id");
-                $cookies.remove("logged_sl_name");
-                console.log(res);
-            });
-        };
+        $scope.slLogin.login = function() { curSL.login($scope.slLogin.suid); };
+        $scope.slLogin.logout = function() { curSL.logout() }; 
 
         // update the sl list on the side
         $scope.slData = {};
@@ -109,15 +78,9 @@ cs106q.controller('SideBarController', ['$scope', '$routeParams', '$location', '
             }, function(list) {
                 $scope.slData.curSLs = list;
             }, function(res) {
-                $scope.main.curSLsuid = undefined;
-                $scope.main.curSLname = undefined;
-                $cookies.remove("logged_sl__id");
-                $cookies.remove("logged_sl_name");
                 console.log(res);
             });
         };
-
-        if ($scope.main.curSLsuid !== undefined) { getCurSLlist(); }
 
         $scope.$on("refreshSLlist", getCurSLlist);
 

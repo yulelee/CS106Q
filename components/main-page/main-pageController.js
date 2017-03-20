@@ -1,7 +1,7 @@
 'use strict';
 
-cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$cookies', '$mdDialog', 
-    function($scope, $routeParams, $location, $resource, $rootScope, $cookies, $mdDialog) {
+cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$mdDialog', 'curSL',
+    function($scope, $resource, $rootScope, $mdDialog, curSL) {
 
         $scope.mainPageModel = {};
 
@@ -66,7 +66,7 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             PickBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
-                $scope.main.curSL = sl;
+                curSL.refresh();
             }, function(err) {
                 console.log(err);
             });
@@ -77,7 +77,7 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
             PutBackBucket.post({
                 bucket_id: bucket_id
             }, function(sl) {
-                $scope.main.curSL = sl;
+                curSL.refresh();
             }, function(err) {
                 console.log(err);
             });
@@ -92,7 +92,7 @@ cs106q.controller('MainPageController', ['$scope', '$routeParams', '$location', 
                 bucket_id: bucket_id,
                 message: message
             }, function(sl) {
-                $scope.main.curSL = sl;
+                curSL.refresh();
             }, function(err) {
                 console.log(err);
             });
