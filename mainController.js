@@ -1,18 +1,17 @@
 'use strict';
 
-var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngMessages', 'ngCookies', 'ngAnimate']);
+var cs106q = angular.module('cs106q', ['ngRoute', 'ngMaterial', 'ngResource', 'ngCookies', 'ngAnimate']);
 
-cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$resource', '$rootScope', '$http', '$cookies', '$timeout', '$window',
-	function($scope, $routeParams, $location, $resource, $rootScope, $http, $cookies, $timeout, $window) {
+cs106q.controller('MainController', ['$scope', '$resource', '$rootScope', '$cookies', 'curSL',
+	function($scope, $resource, $rootScope, $cookies, curSL) {
 		$scope.main = {};
-		$scope.main.buckets = undefined;
 
 		$scope.main.refreshEverything = function() {
 			$rootScope.$broadcast("refreshCurrentList");
 			$rootScope.$broadcast("refreshSLlist");
 			$rootScope.$broadcast("getMessageList");
 			$rootScope.$broadcast("getCurInfo");
-			$rootScope.$broadcast("refreshSL");
+			curSL.refresh();
 		};
 
 		var serverPushBackCallback = function () {
@@ -34,25 +33,19 @@ cs106q.controller('MainController', ['$scope', '$routeParams', '$location', '$re
 		$scope.main.queueInfo = undefined;
 
 		// if there is a sl in cookie, this means that there is a sl logged-in, therefore automatically log in.
-		if ($cookies.get('logged_sl__id')) {
-			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
-			GetSL.get({}, function(sl) {
-			    $scope.main.curSL = sl;
-			    $scope.main.refreshEverything();
-			}, function(err) {
-			    console.log(err);
-			});
-		}
+		curSL.initFromCookie().then(function() {
+			$scope.main.curSL = curSL.getCurSl();
+			$scope.main.refreshEverything();
+		}).catch(function() {
+			console.log('failed initialize the sl from cookie.');
+		});
 
 		var refreshSL = function() {
-			if ($scope.main.curSL && $cookies.get('logged_sl__id') && $scope.main.curSL._id === $cookies.get('logged_sl__id')) {
-				var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
-				GetSL.get({}, function(sl) {
-				    $scope.main.curSL = sl;
-				}, function(err) {
-				    console.log(err);
-				});
-			}
+			curSL.refresh().then(function() {
+				$scope.main.curSL = curSL.getCurSl();
+			}).catch(function() {
+				console.log('failed refresh sl.');
+			});
 		};
 
 		$scope.$on("refreshSL", refreshSL);
