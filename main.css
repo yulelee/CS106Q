@@ -10,3 +10,9 @@ img {
 html * {
 	font-family: 'Roboto', sans-serif;
 }
+
+.bucket-card-content-containter {
+	border-top-style: solid;
+	border-top-width: 2px;
+	border-top-color: black;
+}

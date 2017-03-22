@@ -1,57 +1,59 @@
-<md-card-content>
-	<div flex layout-gt-sm="row" layout-sm="column" layout-align="start end" layout-align-sm="center center">
-		<div flex layout="row" layout-sm="column" 
-			layout-xs="column" layout-align="start center" 
-			layout-align-sm="center center" layout-align-xs="center center" 
-			class="main-page-small-buttons-container">
-			<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.type}}</p5>
+<md-card-content class="bucket-card-content-containter">
+	<div >
+		<div flex layout-gt-sm="row" layout-sm="column" layout-align="start end" layout-align-sm="center center">
+			<div flex layout="row" layout-sm="column" 
+				layout-xs="column" layout-align="start center" 
+				layout-align-sm="center center" layout-align-xs="center center" 
+				class="main-page-small-buttons-container">
+				<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.type}}</p5>
+					</div>
+
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.class}}</p5>
+					</div>
 				</div>
 
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.class}}</p5>
+				<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class" ng-if="showLocation"> 
+						<p5 flex ng-click="lookAtMapFunction()(bucket.position)" 
+							class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
+					</div>
+
+					<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
+						<p5 flex>{{bucket.date_time}}</p5>
+					</div>
 				</div>
 			</div>
 
-			<div flex="nogrow" layout="row" layout-xs="column" layout-align="start center">
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class" ng-if="showLocation"> 
-					<p5 flex ng-click="lookAtMapFunction()(bucket.position)" 
-						class="side-bar-message-box-small-button">Position: {{bucket.position}}</p5>
+			<div flex="nogrow" layout="row" layout-align="center center" ng-if="showControl">
+				<md-button class="main-page-button" ng-click="pickBucketFunction()(bucket._id)" 
+					ng-if="!bucket.solved && curSl.suid && !bucket.helperSL && !curSl.currently_helping">
+					Pick</md-button>
+				<div flex="none" layout="row" layout-align="center center"
+					ng-if="!bucket.solved && bucket.helperSL"> 
+					<p5 flex>{{bucket.helperSL.name}} is helping.</p5>
 				</div>
-
-				<div flex="none" layout="row" layout-align="center center" class="cs106q-bucket-display-type-and-class"> 
-					<p5 flex>{{bucket.date_time}}</p5>
+				<div flex="none" layout="row" layout-align="center center"
+					ng-if="bucket.solved"> 
+					<p5 flex>Solved.</p5>
 				</div>
 			</div>
 		</div>
-
-		<div flex="nogrow" layout="row" layout-align="center center" ng-if="showControl">
-			<md-button class="main-page-button" ng-click="pickBucketFunction()(bucket._id)" 
-				ng-if="!bucket.solved && curSl.suid && !bucket.helperSL && !curSl.currently_helping">
-				Pick</md-button>
-			<div flex="none" layout="row" layout-align="center center"
-				ng-if="!bucket.solved && bucket.helperSL"> 
-				<p5 flex>{{bucket.helperSL.name}} is helping.</p5>
+		
+		<div flex layout="row" layout-sm="column" layout-xs="column" layout-align="start strech">
+			<div flex layout="column" layout-align="start center"> 
+				<h4 ng-if="bucket.students.length > 1">Students</h4>
+				<h4 ng-if="bucket.students.length == 1">Student</h4>
+				<div ng-repeat="name in bucket.students">
+					<h6>{{name}}</h6>
+				</div>
 			</div>
-			<div flex="none" layout="row" layout-align="center center"
-				ng-if="bucket.solved"> 
-				<p5 flex>Solved.</p5>
+			<div flex layout="column" layout-align="start center">
+				<h4>Description</h4>
+				<p class="bucket-description-block">{{bucket.description}}</p>
 			</div>
-		</div>
-	</div>
-	
-	<div flex layout="row" layout-sm="column" layout-xs="column" layout-align="start strech">
-		<div flex layout="column" layout-align="start center"> 
-			<h4 ng-if="bucket.students.length > 1">Students</h4>
-			<h4 ng-if="bucket.students.length == 1">Student</h4>
-			<div ng-repeat="name in bucket.students">
-				<h6>{{name}}</h6>
-			</div>
-		</div>
-		<div flex layout="column" layout-align="start center">
-			<h4>Description</h4>
-			<p class="bucket-description-block">{{bucket.description}}</p>
 		</div>
 	</div>
 </md-card-content>

@@ -39,7 +39,7 @@
 .animate-bucket-repeat.ng-move.ng-move-active,
 .animate-bucket-repeat.ng-enter.ng-enter-active {
 	opacity:0.1;
-	max-height:200px;
+	max-height:300px;
 }
 
 .solve-add-message-dialog-content {
