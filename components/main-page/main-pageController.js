@@ -91,7 +91,7 @@ cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$
             SolveBucket.post({
                 bucket_id: bucket_id,
                 message: message
-            }, function(sl) {
+            }, function() {
                 curSL.refresh();
             }, function(err) {
                 console.log(err);

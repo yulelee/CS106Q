@@ -8,6 +8,8 @@ var SL = require('../schema/sl.js');
 var Message = require('../schema/message.js');
 var DatetimeUtils = require('./datetimeUtils.js');
 
+var messageHandler = require('./message.js');
+
 var queueHandler = {};
 
 var averageHelpingTime = 20.0; // 20 min
@@ -193,63 +195,25 @@ queueHandler.solveBucket = function(req, res) {
 	Bucket.findOne({_id: req.body.bucket_id}, "", function (err, bucket) {
 		if (err) {res.status(400).send('Error bucket not existing.');}
 		else {
-			// mark resolved
-			bucket.solved = true;
+			bucket.solved = true; // mark resolved
 			bucket.helpEndTime = new Date(); // record the end time
 			bucket.save(function(err, savedBucket) {
 				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
 					if (err) { res.status(400).send('Error retrieving the sl.'); }
+					else if (!sl) { res.status(400).send('You are not helping.'); }
 					else {
-						if (!sl) { res.status(400).send('You are not helping.'); }
-						else {
-							// mark sl free
-							sl.currently_helping = undefined;
-							sl.save(function(err, savedSL) {
-								if (err) { res.status(400).send('Error saving the sl.'); }
-								else {
-									if (req.body.message) {
-										var message = new Message({ 
-											slPoster: req.session.sl_id,
-											content: req.body.message, 
-											associatedBucket: req.body.bucket_id
-										});
-										message.save(function(err, savedMessage) {
-										    if (err) {res.status(400).end('Error saving new message.');}
-										    else {
-										    	// add this message to all of the sls
-										    	SL.find({}, function(err, sls) {
-										    		if (err) {res.status(400).end('Error retrieving all sls.');}
-										    		else {
-										    			async.each(sls, function(sl, finishOneSl) {
-										    				sl.unreadMessages.push(savedMessage._id);
-										    				sl.save(function(err) {
-										    					if (err) { res.status(400).end('Error saving message to sl.'); }
-										    					else { finishOneSl(); }
-										    				});
-										    			}, function(err) {
-										    				if (err) { res.status(400).end('Error saving message to sl, final'); }
-										    				else {
-										    					SL.findOne({_id: req.session.sl_id}, function(err, sl) {
-										    						if (err) { res.status(400).end('Error finding the sl again at the end.'); }
-										    						else {
-										    							res.status(200).send(JSON.stringify(sl));
-										    							clientList.broadcastChange();
-										    						}
-										    					});
-										    				}
-										    			});
-										    		}
-										    	});
-										    }
-										});
-									}
-									else {
-										res.status(200).send(JSON.stringify(savedSL));
-										clientList.broadcastChange();
-									}
-								}
-							});
-						}
+						sl.currently_helping = undefined; // mark sl free
+						sl.save(function(err, savedSL) {
+							if (err) { res.status(400).send('Error saving the sl.'); }
+							else {
+								messageHandler.createNewMessage(sl._id, req.body.message, bucket._id).then(function() {
+									res.status(200).send('Success.');
+									clientList.broadcastChange();
+								}).catch(function(err) {
+									res.status(400).send(err);
+								});
+							}
+						});
 					}
 				});
 			});
