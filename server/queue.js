@@ -85,62 +85,83 @@ queueHandler.putNew = function(req, res) {
 
 queueHandler.attachSL = function(buckets, callback) {
 	async.each(buckets, function(bucket, finishOneBucket) {
-		if (bucket.helperSL) {
-			SL.findOne({_id: bucket.helperSL}, function(err, sl) {
-				if (err) { callback('Error finding sl.'); }
-				else {
-					bucket.helperSL = JSON.parse(JSON.stringify(sl));
-					finishOneBucket();
-				}
-			});
-		}
-		else { finishOneBucket(); }
+		SL.findOne({_id: bucket.helperSL}, function(err, sl) {
+			if (err) { callback('Error finding sl.'); }
+			else {
+				bucket.helperSL = JSON.parse(JSON.stringify(sl));
+				finishOneBucket();
+			}
+		});
 	}, function(err) {
 		if (err) { callback('Error attaching sl, final.'); }
 		else { callback(); }
 	});
 };
 
+var assembleSolved = function() {
+	return new Promise(function(resolve, reject) {
+		Bucket.find({solved: true}).sort({'helpEndTime': -1}).limit(20).exec(function(err, solvedBuckets) {
+			if (err) { reject('Error retrieving buckets.'); }
+			else {
+				solvedBuckets = JSON.parse(JSON.stringify(solvedBuckets));
+				DatetimeUtils.parseTime(solvedBuckets, function(err) {
+					if (err) { reject(err); }
+					else {
+						queueHandler.attachSL(solvedBuckets, function(err) {
+							if (err) { reject(err); }
+							else { resolve(solvedBuckets); }
+						});
+					}
+				});
+			}
+		});
+	});
+};
+
+var assembleSolving = function() {
+	return new Promise(function(resolve, reject) {
+		Bucket.find({solved: false, helperSL: {$ne: undefined}}).sort({'helpStartTime': -1}).exec(function(err, solvingBuckets) {
+			if (err) { reject('Error retrieving buckets.'); }
+			else {
+				solvingBuckets = JSON.parse(JSON.stringify(solvingBuckets));
+				DatetimeUtils.parseTime(solvingBuckets, function(err) {
+					if (err) { reject(err); }
+					else {
+						queueHandler.attachSL(solvingBuckets, function(err) {
+							if (err) { reject(err); }
+							else { resolve(solvingBuckets); }
+						});
+					}
+				});
+			}
+		});
+	});
+};
+
+var assemblePending = function() {
+	return new Promise(function(resolve, reject) {
+		Bucket.find({solved: false, helperSL: undefined}).sort({'date_time': 1}).exec(function(err, pendingBuckets) {
+			if (err) { reject('Error retrieving buckets.'); }
+			else {
+				pendingBuckets = JSON.parse(JSON.stringify(pendingBuckets));
+				DatetimeUtils.parseTime(pendingBuckets, function(err) {
+					if (err) { reject(err); }
+					else { resolve(pendingBuckets); }
+				});
+			}
+		});
+	});
+};
+
 queueHandler.getCurrentList = function(req, res) {
 	var categorizedList = {};
-	categorizedList.waiting = [];
-	categorizedList.helping = [];
-	categorizedList.solved = [];
-
-	var tempBucketList = [];
-
-	Bucket.find({solved: true}).sort({'date_time': 1}).limit(20).exec(function(err, solvedBuckets) {
-		if (err) {res.status(400).send('Error retrieving buckets.');}
-		else {
-			tempBucketList = JSON.parse(JSON.stringify(solvedBuckets)); // save the solveBuckets
-			Bucket.find({solved: false}).sort({'date_time': 1}).exec(function(err, unsolvedBuckets) {
-				if (err) {res.status(400).send('Error retrieving buckets.');}
-				else {
-					tempBucketList = tempBucketList.concat(JSON.parse(JSON.stringify(unsolvedBuckets))); // have everything in one list
-					DatetimeUtils.parseTime(tempBucketList, function(err) {
-						if (err) { res.status(400).send(err); }
-						else {
-							queueHandler.attachSL(tempBucketList, function(err) {
-								if (err) { res.status(400).send(err); }
-								else {
-									// now every the helper has been added, we can categorize them
-									// into three categories, waiting, helping, and solved
-									async.each(tempBucketList, function(bucket, finishOneBucket) {
-										if (!bucket.helperSL) categorizedList.waiting.push(bucket);
-										else if (!bucket.solved) categorizedList.helping.push(bucket);
-										else categorizedList.solved.push(bucket);
-										finishOneBucket();
-									}, function(err) {
-										if (err) {response.status(400).end('Error categorizing buckets, final');}
-										else { res.end(JSON.stringify(categorizedList)); }
-									});
-								}
-							});
-						}
-					});
-				}
-			});
-		}
+	Promise.all([assemblePending(), assembleSolving(), assembleSolved()]).then(function(results) {
+		categorizedList.waiting = results[0];
+		categorizedList.helping = results[1];
+		categorizedList.solved = results[2];
+		res.status(200).send(JSON.stringify(categorizedList));
+	}).catch(function(err) {
+		res.status(400).send(err);
 	});
 };
 
