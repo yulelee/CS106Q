@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var async = require('async');
-var data = require('./initData.js')
+var data = require('./initData.js');
 
 mongoose.connect('mongodb://localhost/CS106Q');
 

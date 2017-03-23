@@ -15,7 +15,7 @@ dataBaseHandler.searchSuidHistory = function(req, res) {
 	Bucket.find({studentSuids: req.query.suid}, function(err, buckets) {
 		if (err) { res.status(400).send('Error finding buckets.'); } 
 		else { 
-			var buckets = JSON.parse(JSON.stringify(buckets));
+			buckets = JSON.parse(JSON.stringify(buckets));
 			DatetimeUtils.parseDate(buckets, function(err) {
 				if (err) { res.status(200).send(err); }
 				else { res.status(200).send(JSON.stringify(buckets)); }
@@ -28,7 +28,7 @@ dataBaseHandler.searchDescriptionKeyWordsHistory = function(req, res) {
 	Bucket.find({description: {$regex: req.query.keyword, $options: 'si'}}, function(err, buckets) {
 		if (err) { res.status(400).send('Error finding buckets.'); }
 		else { 
-			var buckets = JSON.parse(JSON.stringify(buckets));
+			buckets = JSON.parse(JSON.stringify(buckets));
 			DatetimeUtils.parseDate(buckets, function(err) {
 				if (err) { res.status(200).send(err); }
 				else { res.status(200).send(JSON.stringify(buckets)); }
@@ -41,7 +41,7 @@ dataBaseHandler.searchMessageKeyWordsHistory = function(req, res) {
 	Message.find({content: {$regex: req.query.keyword, $options: 'si'}}, function(err, messages) {
 		if (err) { res.status(400).send('Error finding messages.'); }
 		else {
-			var messages = JSON.parse(JSON.stringify(messages));
+			messages = JSON.parse(JSON.stringify(messages));
 			MessageHandler.attachSLandBucket(messages, function(err) {
 				if (err) { res.status(200).send(err); }
 				else {

@@ -26,8 +26,7 @@ queueHandler.getCurInfo = function(req, res) {
 				else {
 					info.waitingTime = waitingBucketCount * averageHelpingTime / Math.max(1, loggedInSlCount); // time for the buckets still waiting 
 					Bucket.find({helperSL: {$ne : undefined}, solved: false}).sort({helpStartTime: -1}).limit(1).exec(function(err, newestStartedHelpedBucket) {
-						var needTime = newestStartedHelpedBucket.length === 0 
-							? 0 : (averageHelpingTime - ((new Date()) - newestStartedHelpedBucket[0].helpStartTime) / 1000 / 60); // time needed to end this one
+						var needTime = newestStartedHelpedBucket.length === 0 ? 0 : (averageHelpingTime - ((new Date()) - newestStartedHelpedBucket[0].helpStartTime) / 1000 / 60); // time needed to end this one
 						needTime = Math.max(0, needTime);
 						info.waitingTime += needTime;
 						res.status(200).end(JSON.stringify(info));
@@ -172,7 +171,7 @@ var markBucketAsResolved = function(bucket_id) {
 		Bucket.findOne({_id: bucket_id}).exec().then(function (bucket) {
 			bucket.solved = true; // mark resolved
 			bucket.helpEndTime = new Date(); // record the end time
-			bucket.save().then(function() { resolve() });
+			bucket.save().then(function() { resolve(); });
 		});
 	});
 };
@@ -183,7 +182,7 @@ var markSlAsFree = function(sl_id) {
 			if (sl.currently_helping === undefined) { reject('You are not helping.'); }
 			else {
 				sl.currently_helping = undefined; // mark sl free
-				sl.save().then(function() { resolve() });
+				sl.save().then(function() { resolve(); });
 			}
 		});
 	});

@@ -1,4 +1,6 @@
-cs106q.controller('SearchResultDialogController', ['$scope', '$mdDialog', '$resource', 'keyword',
+'use strict';
+
+angular.module('cs106q').controller('SearchResultDialogController', ['$scope', '$mdDialog', '$resource', 'keyword',
     function($scope, $mdDialog, $resource, keyword) {
 
         $scope.keyword = keyword;
@@ -58,7 +60,14 @@ cs106q.controller('SearchResultDialogController', ['$scope', '$mdDialog', '$reso
                 var lengths = [$scope.suidSearchResult.length, 
                     $scope.keywordSearchResult.length,
                     $scope.messageSearchResult.length];
-                $scope.tab = lengths.indexOf(Math.max(...lengths));
+                $scope.tab = 0;
+                var maxLen = lengths[0];
+                for (var i = 1; i < lengths.length; i++) {
+                    if (lengths[i] > maxLen) {
+                        $scope.tab = i;
+                        maxLen = lengths[i];
+                    }
+                }
             });
         }).catch(function() {
             console.log('Search failed, maybe the search box is empty.');

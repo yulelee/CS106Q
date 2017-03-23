@@ -1,4 +1,6 @@
-cs106q.controller('AddMessageOutOfNowhereController', ['$scope', '$mdDialog',
+'use strict';
+
+angular.module('cs106q').controller('AddMessageOutOfNowhereController', ['$scope', '$mdDialog',
     function($scope, $mdDialog) {
     	$scope.addMessagesDialogModel = {};
     	$scope.addMessagesDialogModel.message = '';

@@ -1,6 +1,6 @@
 'use strict';
 
-cs106q.directive('bucketCard', function () {
+angular.module('cs106q').directive('bucketCard', function () {
     return {
         templateUrl: './components/directives/bucket-card.html',
         scope: { 

@@ -1,6 +1,8 @@
+'use strict';
+
 (function() {
 	var curSlService = function($cookies, $resource, $rootScope) {
-		var _curSL = undefined;
+		var _curSL;
 
 		var getSlFromServer = function(sucessCallback, failCallback) {
 			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
@@ -8,7 +10,7 @@
 			    _curSL = sl;
 			    sucessCallback();
 			}, function(err) {
-			    if (failCallback) failCallback();
+			    if (failCallback) { failCallback(); }
 			});
 		};
 
@@ -24,7 +26,7 @@
 		};
 
 		this.setCurSl = function(sl) {
-			_curSL = s;
+			_curSL = sl;
 		};
 
 		this.refresh = function() {
@@ -69,9 +71,9 @@
 			    console.log(res);
 			});
 		};
-	}
+	};
 
 	curSlService.$inject = ['$cookies', '$resource', '$rootScope'];
 
-	cs106q.service('curSL', curSlService);
+	angular.module('cs106q').service('curSL', curSlService);
 }());

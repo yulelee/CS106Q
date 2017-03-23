@@ -37,7 +37,7 @@ clientList.registerClient = function(req, res) {
     req.on("close", function() {
         var toRemove;
         for (var j =0 ; j < clientList.list.length ; j++) {
-            if (clientList[j] == res) {
+            if (clientList[j] === res) {
                 toRemove =j;
                 break;
             }

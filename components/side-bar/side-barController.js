@@ -1,6 +1,6 @@
 'use strict';
 
-cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$element', '$mdDialog', 'curSL',
+angular.module('cs106q').controller('SideBarController', ['$scope', '$resource', '$rootScope', '$element', '$mdDialog', 'curSL',
     function($scope, $resource, $rootScope, $element, $mdDialog, curSL) {
     	$scope.form = {};
     	$scope.classes = ['CS106A', 'CS106B', 'CS106X'];
@@ -22,8 +22,9 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
     	clearRegisterForm();
 
     	$scope.newBucket.doRegister = function() {
+            var newBucketRegister;
             if ($scope.newBucket.type === 'Conceptual' && $scope.newBucket.existingPick !== null) {
-                var newBucketRegister = $resource("/insertNew", {}, {insertNew: {method: "post", isArray: false}});
+                newBucketRegister = $resource("/insertNew", {}, {insertNew: {method: "post", isArray: false}});
                 newBucketRegister.insertNew({
                     suid: $scope.newBucket.suid, 
                     studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
@@ -38,7 +39,7 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
                 });
             }
             else {
-                var newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
+                newBucketRegister = $resource("/putnew", {}, {putnew: {method: "post", isArray: false}});
                 newBucketRegister.putnew({
         	    	suid: $scope.newBucket.suid, 
         	    	studentName: $scope.newBucket.firstName + ' ' + $scope.newBucket.lastName,
@@ -67,7 +68,7 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
         $scope.slLogin = {};
         $scope.slLogin.suid = undefined;
         $scope.slLogin.login = function() { curSL.login($scope.slLogin.suid); };
-        $scope.slLogin.logout = function() { curSL.logout() }; 
+        $scope.slLogin.logout = function() { curSL.logout(); }; 
 
         // update the sl list on the side
         $scope.slData = {};
@@ -138,6 +139,12 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
         };
 
         $scope.slCurHelpingControl = {};
+
+        var lookAtMapDialogController = function($scope, $mdDialog, position) {
+            $scope.lookAtMapDialogControllerModel = {};
+            $scope.lookAtMapDialogControllerModel.position = position;
+        };
+
         $scope.slCurHelpingControl.lookAtMap = function(position) {
             $mdDialog.show({
                 locals: {position: position},
@@ -150,11 +157,6 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
 
         // export this functionality to main
         $scope.main.lookAtMap = $scope.slCurHelpingControl.lookAtMap;
-
-        var lookAtMapDialogController = function($scope, $mdDialog, position) {
-            $scope.lookAtMapDialogControllerModel = {};
-            $scope.lookAtMapDialogControllerModel.position = position;
-        };
 
         var getCurInfo = function() {
             var GetCurInfo = $resource("/getCurInfo", {}, {get: {method: "get", isArray: false}});
@@ -174,7 +176,7 @@ cs106q.controller('SideBarController', ['$scope', '$resource', '$rootScope', '$e
         $scope.search.keyword = undefined;
 
         $scope.search.submitSearch = function() {
-            if ($scope.search.keyword.length === 0) return;
+            if ($scope.search.keyword.length === 0) { return; }
             $mdDialog.show({
                 locals: { keyword: $scope.search.keyword },
                 controller: 'SearchResultDialogController',

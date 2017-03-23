@@ -1,6 +1,6 @@
 'use strict';
 
-cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$mdDialog', 'curSL',
+angular.module('cs106q').controller('MainPageController', ['$scope', '$resource', '$rootScope', '$mdDialog', 'curSL',
     function($scope, $resource, $rootScope, $mdDialog, curSL) {
 
         $scope.mainPageModel = {};
@@ -36,13 +36,13 @@ cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$
     	var getCurrentList = function (event, callback) {
     	    var GetCurrentList = $resource("/getCurrentList", {}, {get: {method: "get", isArray: false}});
     	    GetCurrentList.get({}, function(buckets) {
-                if (!$scope.main.buckets) $scope.main.buckets = buckets;
+                if (!$scope.main.buckets) { $scope.main.buckets = buckets; }
                 else {
                     mimic($scope.main.buckets.waiting, buckets.waiting);
                     mimic($scope.main.buckets.helping, buckets.helping);
                     mimic($scope.main.buckets.solved, buckets.solved);
                 }
-    	        if (callback) callback();
+    	        if (callback) { callback(); }
     	    }, function(response) {
     	    	console.log(response);
     	    });
@@ -101,6 +101,19 @@ cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$
         // export this function to main
         $scope.main.solveBucket = $scope.mainPageModel.solveBucket;
 
+        var addMessagesDialogController = function($scope, $mdDialog) {
+            $scope.addMessagesDialogModel = {};
+            $scope.addMessagesDialogModel.message = '';
+
+            $scope.addMessagesDialogModel.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.addMessagesDialogModel.sendMessage = function(answer) {
+                $mdDialog.hide($scope.addMessagesDialogModel.message);
+            };
+        };
+
         $scope.mainPageModel.showAddMessagesDialog = function(ev) {
             $mdDialog.show({
                 controller: addMessagesDialogController,
@@ -115,19 +128,6 @@ cs106q.controller('MainPageController', ['$scope', '$resource', '$rootScope', '$
         };
 
         $scope.main.showAddMessagesDialog = $scope.mainPageModel.showAddMessagesDialog;
-
-        var addMessagesDialogController = function($scope, $mdDialog) {
-            $scope.addMessagesDialogModel = {};
-            $scope.addMessagesDialogModel.message = '';
-
-            $scope.addMessagesDialogModel.cancel = function() {
-                $mdDialog.cancel();
-            };
-
-            $scope.addMessagesDialogModel.sendMessage = function(answer) {
-                $mdDialog.hide($scope.addMessagesDialogModel.message);
-            };
-        };
 
     }
 ]);

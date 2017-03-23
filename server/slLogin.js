@@ -8,8 +8,6 @@ var Bucket = require('../schema/bucket.js');
 var MongoStore = require('connect-mongo');
 var session = require('express-session');
 
-
-
 var slLoginHandler = {};
 
 slLoginHandler.slLoginCheck = function(req, res, next) {
@@ -22,7 +20,7 @@ slLoginHandler.slLoginCheck = function(req, res, next) {
     });
 };
 
-var removeOldSession = function(store, session_id) {
+var removeOldSession = function(store, session_id, res) {
     store.destroy(session_id, function(err) {
         if (err) { res.status(400).send('Error destroying the old session.'); }
         else { clientList.broadcastChange(); }
@@ -35,7 +33,7 @@ slLoginHandler.slLogin = function(req, res, m) {
 	        if (err) {res.status(400).send('Error finding sl by suid.');}
 	        else {
                 if (sl) {
-                    if (sl.logged_in_sessionId != undefined) { removeOldSession(req.mongoStore, sl.logged_in_sessionId); }
+                    if (sl.logged_in_sessionId !== undefined) { removeOldSession(req.mongoStore, sl.logged_in_sessionId, res); }
                     req.session.sl_id = sl._id;
                     req.session.slSuid = req.body.suid;
                     req.session.save(function() {
