@@ -4,21 +4,27 @@ var async = require('async');
 
 var clientList = {};
 
-clientList.list = [];
+// the list is a dictionary, the key is the session ID, and the value
+// is an list of connections, i.e. could be tabs from the same browser
+clientList.list = {};
 
-clientList.broadcastChange = function () {
-	async.each(clientList.list, function(res, finishOneRes) {
-	    var d = new Date();
-	    res.write('id: ' + d.getMilliseconds() + '\n');
-	    res.write('data:' + 'refresh' +   '\n\n'); // Note the extra newline
-	    finishOneRes();
+clientList.broadcastChange = function() {
+	async.each(clientList.list, function(resList, finishOneList) {
+        async.each(resList, function(res, finishOneRes) {
+            var d = new Date();
+            res.write('id: ' + d.getMilliseconds() + '\n');
+            res.write('data:' + 'refresh' +   '\n\n'); // Note the extra newline
+            finishOneRes();
+        }, function(err) {
+            if (err) {console.log('Error broadcasting for one session id, final');}
+            finishOneList();
+        });
 	}, function(err) {
 	    if (err) {console.log('Error broadcasting change, final');}
 	});
 };
 
-clientList.registerClient = function(req, res) {
- 
+clientList.registerClient = function(req, res) { 
     req.socket.setTimeout(60 * 60 * 6 * 1000);
 
     res.writeHead(200, {
@@ -28,21 +34,19 @@ clientList.registerClient = function(req, res) {
     });
     res.write('\n');
  
-    // push this res object to our global variable
-    clientList.list.push(res);
+    if (!clientList.list[req.sessionID]) { clientList.list[req.sessionID] = []; }
+    clientList.list[req.sessionID].push(res);
+    console.log('added client: ' + req.sessionID + ', now length = ' + clientList.list[req.sessionID].length);
  
-    // When the request is closed, e.g. the browser window
-    // is closed. We search through the open connections
-    // array and remove this connection.
     req.on("close", function() {
-        var toRemove;
-        for (var j =0 ; j < clientList.list.length ; j++) {
-            if (clientList[j] === res) {
-                toRemove =j;
+        var ress = clientList.list[req.sessionID];
+        for (var i = 0; i < ress.length; i++) {
+            if (ress[i] === res) {
+                ress.splice(i, 1);
                 break;
             }
         }
-        clientList.list.splice(j,1);
+        console.log('removed client: ' + req.sessionID + ', now length = ' + clientList.list[req.sessionID].length);
     });
 };
 
