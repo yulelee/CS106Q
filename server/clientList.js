@@ -2,6 +2,9 @@
 
 var async = require('async');
 
+// var MongoStore = require('connect-mongo')(require('express-session'));
+// var mongoStore = new MongoStore({mongooseConnection: require('mongoose').connection});
+
 var clientList = {};
 
 // the list is a dictionary, the key is the session ID, and the value
@@ -9,19 +12,23 @@ var clientList = {};
 clientList.list = {};
 
 clientList.broadcastChange = function() {
-	async.each(clientList.list, function(resList, finishOneList) {
-        async.each(resList, function(res, finishOneRes) {
+	async.each(clientList.list, function(resList) {
+        async.each(resList, function(res) {
             var d = new Date();
             res.write('id: ' + d.getMilliseconds() + '\n');
             res.write('data:' + 'refresh' +   '\n\n'); // Note the extra newline
-            finishOneRes();
-        }, function(err) {
-            if (err) {console.log('Error broadcasting for one session id, final');}
-            finishOneList();
         });
-	}, function(err) {
-	    if (err) {console.log('Error broadcasting change, final');}
 	});
+};
+
+clientList.forceLogout = function(sessionId) {
+    console.log(sessionId);
+    if (!sessionId) { return; }
+    async.each(clientList.list[sessionId], function(res) {
+        var d = new Date();
+        res.write('id: ' + d.getMilliseconds() + '\n');
+        res.write('data:' + 'forceLogout' +   '\n\n'); // Note the extra newline
+    });
 };
 
 clientList.registerClient = function(req, res) { 
@@ -46,7 +53,8 @@ clientList.registerClient = function(req, res) {
                 break;
             }
         }
-        console.log('removed client: ' + req.sessionID + ', now length = ' + clientList.list[req.sessionID].length);
+        console.log('removed client: ' + req.sessionID + ', now length = ' + ress.length);
+        if (ress.length === 0) { delete clientList.list[req.sessionID]; }
     });
 };
 

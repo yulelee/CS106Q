@@ -8,6 +8,8 @@ var Bucket = require('../schema/bucket.js');
 var MongoStore = require('connect-mongo');
 var session = require('express-session');
 
+var slHandler = require('./sl.js');
+
 var slLoginHandler = {};
 
 slLoginHandler.slLoginCheck = function(req, res, next) {
@@ -21,44 +23,35 @@ slLoginHandler.slLoginCheck = function(req, res, next) {
 };
 
 var removeOldSession = function(store, session_id, res) {
-    store.destroy(session_id, function(err) {
-        if (err) { res.status(400).send('Error destroying the old session.'); }
-        else { clientList.broadcastChange(); }
+    return new Promise(function(resolve, reject) {
+        store.destroy(session_id, function(err) {
+            if (err) { reject(err); }
+            else {
+                resolve();
+                clientList.broadcastChange();
+            }
+        });
     });
 };
 
-slLoginHandler.slLogin = function(req, res, m) {
-	if (req.body.suid) {
-	    SL.findOne({suid: req.body.suid}, function(err, sl) {
-	        if (err) {res.status(400).send('Error finding sl by suid.');}
-	        else {
-                if (sl) {
-                    if (sl.logged_in_sessionId !== undefined) { removeOldSession(req.mongoStore, sl.logged_in_sessionId, res); }
-                    req.session.sl_id = sl._id;
-                    req.session.slSuid = req.body.suid;
-                    req.session.save(function() {
-                        sl.logged_in_sessionId = req.session.id;
-                        sl.save(function() {
-                            if (sl.currently_helping) {
-                                Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
-                                    sl = JSON.parse(JSON.stringify(sl));
-                                    sl.currently_helping = JSON.parse(JSON.stringify(bucket));
-                                    res.status(200).send(JSON.stringify(sl));
-                                    clientList.broadcastChange();
-                                });
-                            }
-                            else {
-                                res.status(200).send(JSON.stringify(sl));
-                                clientList.broadcastChange();
-                            }
-                        });
-                    });
-                } else {
-                    res.status(400).send('SUID not found.');
-                }
-	        }
-	    });
-	}
+slLoginHandler.slLogin = function(req, res) {
+    SL.findOne({suid: req.body.suid}).exec().then(function(sl) {
+        if (!sl) { reject('SUID not found!'); return; }
+        var oldLoggedInSessionId = sl.logged_in_sessionId !== req.session.id ? sl.logged_in_sessionId : undefined;
+        req.session.sl_id = sl._id;
+        req.session.slSuid = req.body.suid;
+        sl.logged_in_sessionId = req.session.id;
+        Promise.all([sl.save(), req.session.save()]).then(function() {
+            sl = JSON.parse(JSON.stringify(sl));
+            slHandler.attachBucket(sl).then(function() {
+                res.status(200).send(JSON.stringify(sl));
+                clientList.broadcastChange();
+                clientList.forceLogout(oldLoggedInSessionId);
+            });
+        });
+    }).catch(function(err) {
+        res.status(400).send(err);
+    });
 };
 
 slLoginHandler.slLogout = function(req, res) {
@@ -68,7 +61,9 @@ slLoginHandler.slLogout = function(req, res) {
             if (sl && sl.logged_in_sessionId && sl.logged_in_sessionId === req.session.id) {
                 sl.logged_in_sessionId = undefined;
                 sl.save(function() {
-                    req.session.destroy(function() {
+                    req.session.sl_id = undefined;
+                    req.session.slSuid = undefined;
+                    req.session.save(function() {
                         res.status(200).send('logged out successfully.');
                         clientList.broadcastChange();
                     });

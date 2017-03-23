@@ -32,6 +32,15 @@ slHandler.getCurSLlist = function(req, res) {
     });
 };
 
+slHandler.attachBucket = function(sl) {
+    return new Promise(function(resolve, reject) {
+        Bucket.findOne({_id: sl.currently_helping}).exec().then(function(bucket) {
+            sl.currently_helping = JSON.parse(JSON.stringify(bucket));
+            resolve();
+        });
+    });
+};
+
 slHandler.getSL = function(req, res) {
     SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
         if (err) { res.status(400).send('Error searching for SL.'); }

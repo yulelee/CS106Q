@@ -4,13 +4,16 @@
 	var curSlService = function($cookies, $resource, $rootScope) {
 		var _curSL;
 
-		var getSlFromServer = function(sucessCallback, failCallback) {
+		var getSlFromServer = function(callback, failCallback) {
 			var GetSL = $resource("/getSL", {}, {get: {method: "get", isArray: false}});
 			GetSL.get({}, function(sl) {
+				console.log(sl);
 			    _curSL = sl;
-			    sucessCallback();
+			    callback();
 			}, function(err) {
+				_curSL = undefined;
 			    if (failCallback) { failCallback(); }
+			    else { callback(); }
 			});
 		};
 
