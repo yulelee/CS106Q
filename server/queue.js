@@ -167,126 +167,95 @@ queueHandler.getCurrentList = function(req, res) {
 	});
 };
 
-// don't use this anymore, nobody should delete a bucket directly
-queueHandler.deleteBucket = function(req, res) {
-	Bucket.find({_id: req.body.bucketId}, function (err, bucket) {
-		if (err) {res.status(400).send('Error bucket not existing.');}
-		else {
-			Bucket.find({_id: req.body.bucketId}).remove(function() {
-				SL.findOne({currently_helping: req.body.bucketId}, "", function(err, sl) {
-					if (err) { res.status(400).send('Error retrieving the sl.'); }
-					else {
-						if (sl) { sl.currently_helping = undefined; }
-						sl.save(function(err) {
-							if (err) { res.status(400).send('Error saving the sl.'); }
-							else {
-								res.status(200).send('Deleted.');
-								clientList.broadcastChange();
-							}
-						})
-					}
-				});
-			});
-		}
+var markBucketAsResolved = function(bucket_id) {
+	return new Promise(function(resolve, reject) {
+		Bucket.findOne({_id: bucket_id}).exec().then(function (bucket) {
+			bucket.solved = true; // mark resolved
+			bucket.helpEndTime = new Date(); // record the end time
+			bucket.save().then(function() { resolve() });
+		});
+	});
+};
+
+var markSlAsFree = function(sl_id) {
+	return new Promise(function(resolve, reject) {
+		SL.findOne({currently_helping: {$ne: undefined}, _id: sl_id}).exec().then(function(sl) {
+			if (sl.currently_helping === undefined) { reject('You are not helping.'); }
+			else {
+				sl.currently_helping = undefined; // mark sl free
+				sl.save().then(function() { resolve() });
+			}
+		});
 	});
 };
 
 queueHandler.solveBucket = function(req, res) {
-	Bucket.findOne({_id: req.body.bucket_id}, "", function (err, bucket) {
-		if (err) {res.status(400).send('Error bucket not existing.');}
-		else {
-			bucket.solved = true; // mark resolved
-			bucket.helpEndTime = new Date(); // record the end time
-			bucket.save(function(err, savedBucket) {
-				SL.findOne({currently_helping: req.body.bucket_id, _id: req.session.sl_id}, "", function(err, sl) {
-					if (err) { res.status(400).send('Error retrieving the sl.'); }
-					else if (!sl) { res.status(400).send('You are not helping.'); }
-					else {
-						sl.currently_helping = undefined; // mark sl free
-						sl.save(function(err, savedSL) {
-							if (err) { res.status(400).send('Error saving the sl.'); }
-							else {
-								messageHandler.createNewMessage(sl._id, req.body.message, bucket._id).then(function() {
-									res.status(200).send('Success.');
-									clientList.broadcastChange();
-								}).catch(function(err) {
-									res.status(400).send(err);
-								});
-							}
-						});
-					}
-				});
-			});
-		}
+	markBucketAsResolved(req.body.bucket_id)
+	.then(markSlAsFree(req.session.sl_id))
+	.then(messageHandler.createNewMessage(req.session.sl_id, req.body.message, req.body.bucket_id))
+	.then(function() {
+		res.status(200).send('Success.');
+		clientList.broadcastChange();
+	}).catch(function(err) {
+		res.status(400).send(err);
+	});
+};
+
+// so it seems like no one has touched it
+var markBucketAsClean = function(bucket_id) {
+	return new Promise(function(resolve, reject) {
+		Bucket.findOne({_id: bucket_id}).exec().then(function(bucket) {
+			if (bucket.helperSL === undefined) { reject('Error bucket not marked as being helped.'); }
+			else {
+				bucket.helperSL = undefined;
+				bucket.helpStartTime = undefined; // erase the starting time of this help
+				bucket.save().then(function () { resolve(); });
+			}
+		});
 	});
 };
 
 queueHandler.putBackBucket = function(req, res) {
-	Bucket.findOne({_id: req.body.bucket_id}, function(err, bucket) {
-		if (err) {res.status(400).send('Error bucket not existing.');}
-		else {
-			if (bucket.helperSL === undefined) { res.status(400).send('Error bucket not marked as being helped.'); }
-			else {
-				SL.findOne({_id: bucket.helperSL}, "", function(err, sl) {
-					if (err || sl.currently_helping === undefined) { res.status(400).send('Error sl not marked as being helping.'); }
-					else {
-						sl.currently_helping = undefined;
-						sl.save(function(err, savedSL) {
-							if (err) { res.status(400).send('Error saving the sl.'); }
-							else {
-								bucket.helperSL = undefined;
-								bucket.helpStartTime = undefined; // erase the starting time of this help
-								bucket.save(function(err) {
-									if (err) { res.status(400).send('Error saving the bucket.'); }
-									else {
-										res.status(200).send(JSON.stringify(savedSL)); 
-										clientList.broadcastChange();
-									}
-								});
-							}
-						});
-					}
-				});
-			}
-		}
+	markBucketAsClean(req.body.bucket_id)
+	.then(markSlAsFree(req.session.sl_id))
+	.then(function() {
+		res.status(200).send('Success.');
+		clientList.broadcastChange();
+	}).catch(function(err) {
+		res.status(400).send(err);
 	});
 };
 
 queueHandler.pickBucket = function(req, res) {
-    SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
-        if (err) { res.status(400).send('Cannot retrieve SL.'); }
-        else { 
-            if (sl.currently_helping !== undefined) { res.status(400).send('Please finish the current one first!'); }
-            else {
-                Bucket.findOne({_id: req.body.bucket_id}, "", function(err, bucket) {
-                    if (err) { res.status(400).send('Error retrieving bucket!'); }
-                    else {
-                        if (bucket.helperSL !== undefined || bucket.solved) { res.status(400).send('Somebody already helping or helped!'); }
-                        else {
-                        	bucket.helperSL = sl._id;
-                        	bucket.helpStartTime = new Date(); // record the current time
-                        	bucket.save(function(err) {
-                        	    if (err) { res.status(400).send('Error saving bucket!'); }
-                        	    else {
-                        	    	sl.currently_helping = bucket._id;
-                        	    	sl.save(function(err, savedSL) {
-                        	    	    if (err) { res.status(400).send('Error saving SL!'); }
-                        	    	    else {
-                        	    	    	// the returned sl contains the whole bucket object
-                        	    	    	savedSL = JSON.parse(JSON.stringify(savedSL));
-                        	    	    	savedSL.currently_helping = JSON.parse(JSON.stringify(bucket));
-                        	    	    	res.status(200).send(JSON.stringify(savedSL)); 
-                        	    	    	clientList.broadcastChange();
-                        	    	    }
-                        	    	});
-                        	    }
-                        	});
-                        }
-                    }
-                });
-            }
-        }
-    });
+	Promise.all([function() {
+		return new Promise(function(resolve, reject) {
+			SL.findOne({_id: req.session.sl_id}).exec().then(function(sl) {
+				if (sl.currently_helping) { reject('Please finish the current one first!'); }
+				else { resolve(sl); }
+			});
+		});
+	}(), function() {
+		return new Promise(function(resolve, reject) {
+			Bucket.findOne({_id: req.body.bucket_id}).exec().then(function(bucket) {
+				if (bucket.helperSL || bucket.solved) { reject('Please finish the current one first!'); }
+				else { resolve(bucket); }
+			});
+		});
+	}()]).then(function(data) {
+		var sl = data[0];
+		var bucket = data[1];
+		bucket.helperSL = sl._id;
+		bucket.helpStartTime = new Date(); // record the current time
+		bucket.save().then(function() {
+			sl.currently_helping = bucket._id;
+			sl.save().then(function() {
+				res.status(200).send('Success.'); 
+				clientList.broadcastChange();
+			});
+		});
+	}).catch(function(err) {
+		res.status(400).send(err);
+	});
 };
 
 module.exports = queueHandler;

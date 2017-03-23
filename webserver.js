@@ -31,7 +31,6 @@ app.post('/insertNew', queueHandler.insertNew);
 app.get('/getCurrentList', queueHandler.getCurrentList);
 app.get('/getCurInfo', queueHandler.getCurInfo);
 
-app.post('/deleteBucket', slLoginHandler.slLoginCheck, queueHandler.deleteBucket);
 app.post('/pickBucket', slLoginHandler.slLoginCheck, queueHandler.pickBucket);
 app.post('/putBackBucket', slLoginHandler.slLoginCheck, queueHandler.putBackBucket);
 app.post('/solveBucket', slLoginHandler.slLoginCheck, queueHandler.solveBucket);
