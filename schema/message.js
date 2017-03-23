@@ -1,6 +1,7 @@
 "use strict";
 
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 
 var messageSchema = new mongoose.Schema({
     slPoster: mongoose.Schema.Types.ObjectId,

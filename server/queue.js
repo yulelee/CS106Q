@@ -227,21 +227,17 @@ queueHandler.putBackBucket = function(req, res) {
 };
 
 queueHandler.pickBucket = function(req, res) {
-	Promise.all([function() {
-		return new Promise(function(resolve, reject) {
+	Promise.all([new Promise(function(resolve, reject) {
 			SL.findOne({_id: req.session.sl_id}).exec().then(function(sl) {
 				if (sl.currently_helping) { reject('Please finish the current one first!'); }
 				else { resolve(sl); }
 			});
-		});
-	}(), function() {
-		return new Promise(function(resolve, reject) {
+		}), new Promise(function(resolve, reject) {
 			Bucket.findOne({_id: req.body.bucket_id}).exec().then(function(bucket) {
 				if (bucket.helperSL || bucket.solved) { reject('Please finish the current one first!'); }
 				else { resolve(bucket); }
 			});
-		});
-	}()]).then(function(data) {
+		})]).then(function(data) {
 		var sl = data[0];
 		var bucket = data[1];
 		bucket.helperSL = sl._id;
