@@ -8,50 +8,41 @@ var SL = require('../schema/sl.js');
 var Message = require('../schema/message.js');
 var DatetimeUtils = require('./datetimeUtils.js');
 var MessageHandler = require('./message.js');
+var GeneralUtil = require('./util.js');
 
 var dataBaseHandler = {};
 
 dataBaseHandler.searchSuidHistory = function(req, res) {
-	Bucket.find({studentSuids: req.query.suid}, function(err, buckets) {
-		if (err) { res.status(400).send('Error finding buckets.'); } 
-		else { 
-			buckets = JSON.parse(JSON.stringify(buckets));
-			DatetimeUtils.parseDate(buckets, function(err) {
-				if (err) { res.status(200).send(err); }
-				else { res.status(200).send(JSON.stringify(buckets)); }
-			});
-		}
+	Bucket.find({studentSuids: req.query.suid}).sort({'data_time': -1}).exec()
+	.then(GeneralUtil)
+	.then(DatetimeUtils.parseDate)
+	.then(function(buckets) {
+		res.status(200).send(JSON.stringify(buckets));
+	}).catch(function(err) {
+		res.status(400).send(err);
 	});
 };
 
 dataBaseHandler.searchDescriptionKeyWordsHistory = function(req, res) {
-	Bucket.find({description: {$regex: req.query.keyword, $options: 'si'}}, function(err, buckets) {
-		if (err) { res.status(400).send('Error finding buckets.'); }
-		else { 
-			buckets = JSON.parse(JSON.stringify(buckets));
-			DatetimeUtils.parseDate(buckets, function(err) {
-				if (err) { res.status(200).send(err); }
-				else { res.status(200).send(JSON.stringify(buckets)); }
-			});
-		}
+	Bucket.find({description: {$regex: req.query.keyword, $options: 'si'}}).sort({'date_time': -1}).exec()
+	.then(GeneralUtil)
+	.then(DatetimeUtils.parseDate)
+	.then(function(buckets) {
+		res.status(200).send(JSON.stringify(buckets));
+	}).catch(function(err) {
+		res.status(400).send(err);
 	});
 };
 
 dataBaseHandler.searchMessageKeyWordsHistory = function(req, res) {
-	Message.find({content: {$regex: req.query.keyword, $options: 'si'}}, function(err, messages) {
-		if (err) { res.status(400).send('Error finding messages.'); }
-		else {
-			messages = JSON.parse(JSON.stringify(messages));
-			MessageHandler.attachSLandBucket(messages, function(err) {
-				if (err) { res.status(200).send(err); }
-				else {
-					DatetimeUtils.parseDate(messages, function(err) {
-						if (err) { res.status(200).send(err); }
-						else { res.status(200).send(JSON.stringify(messages)); }
-					});
-				}
-			});
-		}
+	Message.find({content: {$regex: req.query.keyword, $options: 'si'}}).sort({'date_time': -1}).exec()
+	.then(GeneralUtil.parseCopy)
+	.then(MessageHandler.attachSLandBucket)
+	.then(DatetimeUtils.parseDate)
+	.then(function(messages) {
+		res.status(200).send(JSON.stringify(messages));
+	}).catch(function(err) {
+		res.status(200).send(err);
 	});
 };
 
