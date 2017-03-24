@@ -4,43 +4,54 @@ var async = require('async');
 
 var datetimeUtils = {};
 
-datetimeUtils.parseSingleDate = function(object, callback) {
-	object.date_time = new Date(object.date_time).toLocaleString('en-US', {
-		weekday: 'short',
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: true, 
-		hour: "2-digit", 
-		minute: "2-digit"
-	});
-	callback();
-};
+// This module assume the object/objects being passed in
+// has a data_time field
 
-datetimeUtils.parseSingleTime = function(object, callback) {
-	object.date_time = new Date(object.date_time).toLocaleString('en-US', {
-		hour12: true, 
-		hour: "2-digit", 
-		minute: "2-digit"
-	});
-	callback();
-};
-
-datetimeUtils.parseDate = function(objects, callback) {
-	async.each(objects, function(object, finishOneObject) {
-		datetimeUtils.parseSingleDate(object, finishOneObject);
-	}, function(err) {
-		if (err) { callback('Error attaching date strings, final.'); }
-		else { callback(); }
+datetimeUtils.parseSingleDate = function(object) {
+	return new Promise(function(resolve, reject) {
+		object.date_time = new Date(object.date_time).toLocaleString('en-US', {
+			weekday: 'short',
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour12: true, 
+			hour: "2-digit", 
+			minute: "2-digit"
+		});
+		resolve();
 	});
 };
 
-datetimeUtils.parseTime = function(objects, callback) {
-	async.each(objects, function(object, finishOneObject) {
-		datetimeUtils.parseSingleTime(object, finishOneObject);
-	}, function(err) {
-		if (err) { callback('Error attaching time strings, final.'); }
-		else { callback(); }
+datetimeUtils.parseSingleTime = function(object) {
+	return new Promise(function(resolve, reject) {
+		object.date_time = new Date(object.date_time).toLocaleString('en-US', {
+			hour12: true, 
+			hour: "2-digit", 
+			minute: "2-digit"
+		});
+		resolve();
+	});
+};
+
+datetimeUtils.parseDate = function(objects) {
+	return new Promise(function(resolve, reject) {
+		async.each(objects, function(object, finishOneObject) {
+			datetimeUtils.parseSingleDate(object).then(finishOneObject);
+		}, function(err) {
+			if (err) { reject(err); }
+			else { resolve(objects); }
+		});
+	});
+};
+
+datetimeUtils.parseTime = function(objects) {
+	return new Promise(function(resolve, reject) {
+		async.each(objects, function(object, finishOneObject) {
+			datetimeUtils.parseSingleTime(object).then(finishOneObject);
+		}, function(err) {
+			if (err) { reject(err); }
+			else { resolve(objects); }
+		});
 	});
 };
 
