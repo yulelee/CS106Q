@@ -51,11 +51,11 @@ slLoginHandler.slLogin = function(req, res) {
 slLoginHandler.slLogout = function(req, res) {
     SL.findOne({suid: req.session.slSuid, _id: req.session.sl_id}).exec().then(function(sl) {
         sl.logged_in_sessionId = undefined;
-        return sl.save;
+        return sl.save();
     }).then(function() {
         req.session.sl_id = undefined;
         req.session.slSuid = undefined;
-        return req.save;
+        return req.session.save();
     }).then(function() {
         res.status(200).send('Success.');
         clientList.broadcastChange();

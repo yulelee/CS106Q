@@ -6,58 +6,51 @@ var SL = require('../schema/sl.js');
 var clientList = require('./clientList.js');
 var Bucket = require('../schema/bucket.js');
 
+var GeneralUtil = require('./util.js');
+
 var slHandler = {};
 
-slHandler.getCurSLlist = function(req, res) {
-    SL.find({logged_in_sessionId: {$ne : undefined}}, function(err, curSLs) {
-        if (err) { res.status(400).send('Error.'); }
-        else { 
-            curSLs = JSON.parse(JSON.stringify(curSLs)); 
-            async.each(curSLs, function(sl, finishOneSL) {
-                if (sl.currently_helping) {
-                    Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
-                        if (err) { res.status(400).send('Error retrieving bucket!'); }
-                        else { 
-                            sl.currently_helping = JSON.parse(JSON.stringify(bucket)); 
-                            finishOneSL();
-                        }
-                    });
-                } 
-                else { finishOneSL(); }
-            }, function(err) {
-                if (err) {res.status(400).send('Error retrieving bucket!');}
-                else { res.status(200).send(JSON.stringify(curSLs)); }
-            });
-        }
+slHandler.attachBucket = function(sl) {
+    return Bucket.findOne({_id: sl.currently_helping}).exec().then(GeneralUtil.parseCopy)
+    .then(GeneralUtil.parseCopy).then(function(bucket) {
+        sl.currently_helping = bucket;
+        return sl;
+    }).catch(function(err) {
+        throw err;
     });
 };
 
-slHandler.attachBucket = function(sl) {
+slHandler.attachBuckets = function(sls) {
     return new Promise(function(resolve, reject) {
-        Bucket.findOne({_id: sl.currently_helping}).exec().then(function(bucket) {
-            sl.currently_helping = JSON.parse(JSON.stringify(bucket));
-            resolve();
+        async.each(sls, function(sl, finishOneSL) {
+            if (sl.currently_helping) { slHandler.attachBucket(sl).then(() => finishOneSL()); } 
+            else { finishOneSL(); }
+        }, function(err) {
+            if (err) { reject(err); }
+            else { resolve(sls); }
         });
     });
 };
 
+slHandler.getCurSLlist = function(req, res) {
+    SL.find({logged_in_sessionId: {$ne : undefined}}).exec()
+    .then(GeneralUtil.parseCopy)
+    .then(slHandler.attachBuckets)
+    .then(function(sls) {
+        res.status(200).send(JSON.stringify(sls));
+    }).catch(function(err) {
+        res.status(400).send(err);
+    });
+};
+
 slHandler.getSL = function(req, res) {
-    SL.findOne({_id: req.session.sl_id}, "", function(err, sl) {
-        if (err) { res.status(400).send('Error searching for SL.'); }
-        else { 
-            if (sl.currently_helping) {
-                Bucket.findOne({_id: sl.currently_helping}, function(err, bucket) {
-                    if (err) { res.status(400).send('Error retrieving bucket!'); }
-                    else {
-                        // the returned sl contains the whole bucket object
-                        sl = JSON.parse(JSON.stringify(sl));
-                        sl.currently_helping = JSON.parse(JSON.stringify(bucket));
-                        res.status(200).send(JSON.stringify(sl));
-                    }
-                });
-            }
-            else { res.status(200).send(JSON.stringify(sl)); }
-        }
+    SL.findOne({_id: req.session.sl_id}).exec()
+    .then(GeneralUtil.parseCopy)
+    .then(slHandler.attachBucket)
+    .then(function(sl) {
+        res.status(200).send(JSON.stringify(sl));
+    }).catch(function(err) {
+        res.status(400).send(err);
     });
 };
 

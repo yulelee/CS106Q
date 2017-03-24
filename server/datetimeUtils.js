@@ -55,4 +55,11 @@ datetimeUtils.parseTime = function(objects) {
 	});
 };
 
+datetimeUtils.sortNewestFirst = function(objects) {
+	return new Promise(function(resolve, reject) {
+		objects.sort(function(a, b) { return new Date(b.date_time) - new Date(a.date_time); });
+		resolve(objects);
+	});
+};
+
 module.exports = datetimeUtils;

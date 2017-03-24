@@ -220,7 +220,7 @@ queueHandler.pickBucket = function(req, res) {
 			});
 		}), new Promise(function(resolve, reject) {
 			Bucket.findOne({_id: req.body.bucket_id}).exec().then(function(bucket) {
-				if (bucket.helperSL || bucket.solved) { reject('Please finish the current one first!'); }
+				if (bucket.helperSL || bucket.solved) { reject('Please finish pick a new one!'); }
 				else { resolve(bucket); }
 			});
 		})]).then(function(data) {

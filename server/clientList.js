@@ -21,14 +21,16 @@ clientList.broadcastChange = function() {
 	});
 };
 
-clientList.forceLogout = function(sessionId) {
-    console.log(sessionId);
-    if (!sessionId) { return; }
-    async.each(clientList.list[sessionId], function(res) {
-        var d = new Date();
-        res.write('id: ' + d.getMilliseconds() + '\n');
-        res.write('data:' + 'forceLogout' +   '\n\n'); // Note the extra newline
-    });
+clientList.forceLogout = function(sl) {
+    var list = clientList.list[sl.logged_in_sessionId];
+    if (list) {
+        async.each(list, function(res) {
+            var d = new Date();
+            res.write('id: ' + d.getMilliseconds() + '\n');
+            res.write('data:' + 'forceLogout' +   '\n\n'); // Note the extra newline
+        });
+    }
+    return sl;
 };
 
 clientList.registerClient = function(req, res) { 
