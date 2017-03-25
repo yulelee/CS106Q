@@ -12,5 +12,4 @@ var messageSchema = new mongoose.Schema({
 
 var Message = mongoose.model('Message', messageSchema);
 
-// make this available to our photos in our Node applications
 module.exports = Message;

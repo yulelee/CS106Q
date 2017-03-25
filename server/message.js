@@ -90,7 +90,7 @@ messageHandler.dismissMessage = function(req, res) {
 			sl.save().then(function() {
 				res.status(200).send('Deleted.'); 
 				clientList.broadcastChange();
-			})
+			});
 		}
 	}).catch(function(err) {
 		res.status(400).send(err);

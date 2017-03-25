@@ -54,12 +54,15 @@ var validateExistingBucket = function(suid) {
 
 queueHandler.insertNew = function(req, res) {
 	validateExistingBucket(req.body.suid)
-	.then(() => Bucket.findOne({_id: req.body._id}).exec())
-	.then((bucket) => new Promise(function(resolve, reject) {
-		bucket.students.push(req.body.studentName);
-		bucket.studentSuids.push(req.body.suid);
-		bucket.save().then(resolve);
-	})).then(function() {
+	.then(function() {
+		return Bucket.findOne({_id: req.body._id}).exec();
+	}).then(function(bucket) {
+		return new Promise(function(resolve, reject) {
+			bucket.students.push(req.body.studentName);
+			bucket.studentSuids.push(req.body.suid);
+			bucket.save().then(resolve);
+		});
+	}).then(function() {
 		res.status(200).end('Success.');
 		clientList.broadcastChange();
 	}).catch(function(err) {

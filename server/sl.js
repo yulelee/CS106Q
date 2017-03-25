@@ -23,7 +23,7 @@ slHandler.attachBucket = function(sl) {
 slHandler.attachBuckets = function(sls) {
     return new Promise(function(resolve, reject) {
         async.each(sls, function(sl, finishOneSL) {
-            if (sl.currently_helping) { slHandler.attachBucket(sl).then(() => finishOneSL()); } 
+            if (sl.currently_helping) { slHandler.attachBucket(sl).then(function() { finishOneSL(); }); }
             else { finishOneSL(); }
         }, function(err) {
             if (err) { reject(err); }

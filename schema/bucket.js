@@ -34,5 +34,4 @@ var bucketSchema = new mongoose.Schema({
 
 var Bucket = mongoose.model('Bucket', bucketSchema);
 
-// make this available to our photos in our Node applications
 module.exports = Bucket;

@@ -13,5 +13,4 @@ var slSchema = new mongoose.Schema({
 
 var SL = mongoose.model('SL', slSchema);
 
-// make this available to our photos in our Node applications
 module.exports = SL;

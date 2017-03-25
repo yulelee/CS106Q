@@ -18,7 +18,6 @@ cs106q.controller('MainController', ['$scope', '$resource', '$rootScope', 'curSL
 
 		var serverPushBackCallback = function(event) {
 			$scope.$apply(function () {
-				console.log(event);
 				if (event.data === 'refresh') { $scope.main.refreshEverything(); }
 				if (event.data === 'forceLogout') { curSL.refresh(); }
 			});

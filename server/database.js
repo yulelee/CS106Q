@@ -25,7 +25,7 @@ dataBaseHandler.searchSuidHistory = function(req, res) {
 
 dataBaseHandler.searchDescriptionKeyWordsHistory = function(req, res) {
 	Bucket.find({description: {$regex: req.query.keyword, $options: 'si'}}).sort({'date_time': -1}).exec()
-	.then(GeneralUtil)
+	.then(GeneralUtil.parseCopy)
 	.then(DatetimeUtils.parseDate)
 	.then(function(buckets) {
 		res.status(200).send(JSON.stringify(buckets));
